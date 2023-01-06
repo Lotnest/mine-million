@@ -1,157 +1,68 @@
 package dev.lotnest.minemillion.util;
 
-import org.junit.Test;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class StringUtilTest {
-
-    @Test
-    public void capitalize_blankString() {
-        //GIVEN
-        String string = "";
-
-        //WHEN
+class StringUtilTest {
+    @ParameterizedTest
+    @ValueSource(strings = {"", "a", "ab", "ab cd"})
+    void capitalize_variousInputs(String string) {
+        // WHEN
         String result = StringUtil.capitalize(string);
 
-        //THEN
-        assertThat(result).isEqualTo(string);
+        // THEN
+        assertThat(result).isEqualTo(buildExpectedResult(string, false));
     }
 
-    @Test
-    public void capitalize_oneLetter() {
-        //GIVEN
-        String string = "a";
-
-        //WHEN
-        String result = StringUtil.capitalize(string);
-
-        //THEN
-        assertThat(result).isEqualTo("A");
-    }
-
-    @Test
-    public void capitalize_twoLetters() {
-        //GIVEN
-        String string = "ab";
-
-        //WHEN
-        String result = StringUtil.capitalize(string);
-
-        //THEN
-        assertThat(result).isEqualTo("Ab");
-    }
-
-    @Test
-    public void capitalize_twoWords() {
-        //GIVEN
-        String string = "ab cd";
-
-        //WHEN
-        String result = StringUtil.capitalize(string);
-
-        //THEN
-        assertThat(result).isEqualTo("Ab cd");
-    }
-
-    @Test
-    public void capitalizeFully_blankString() {
-        //GIVEN
-        String string = "";
-
-        //WHEN
+    @ParameterizedTest
+    @ValueSource(strings = {"", "a", "ab", "ab cd"})
+    void capitalizeFully_variousInputs(String string) {
+        // WHEN
         String result = StringUtil.capitalizeFully(string);
 
-        //THEN
-        assertThat(result).isEqualTo(string);
+        // THEN
+        assertThat(result).isEqualTo(buildExpectedResult(string, true));
     }
 
-    @Test
-    public void capitalizeFully_oneLetter() {
-        //GIVEN
-        String string = "a";
+    private String buildExpectedResult(String string, boolean fully) {
+        if (StringUtils.isBlank(string)) {
+            return string;
+        }
 
-        //WHEN
-        String result = StringUtil.capitalizeFully(string);
+        String[] words = string.split(" ");
+        StringBuilder wordsBuilder = new StringBuilder();
 
-        //THEN
-        assertThat(result).isEqualTo("A");
+        for (int i = 0; i < words.length; i++) {
+            if (i > 0) {
+                wordsBuilder.append(" ");
+            }
+
+            if (i == 0 || fully) {
+                wordsBuilder.append(Character.toUpperCase(words[i].charAt(0)));
+                wordsBuilder.append(words[i].substring(1).toLowerCase());
+            } else {
+                wordsBuilder.append(words[i]);
+            }
+        }
+
+        return wordsBuilder.toString();
     }
 
-    @Test
-    public void capitalizeFully_twoLetters() {
-        //GIVEN
-        String string = "ab";
-
-        //WHEN
-        String result = StringUtil.capitalizeFully(string);
-
-        //THEN
-        assertThat(result).isEqualTo("Ab");
-    }
-
-    @Test
-    public void capitalizeFully_twoWords() {
-        //GIVEN
-        String string = "ab cd";
-
-        //WHEN
-        String result = StringUtil.capitalizeFully(string);
-
-        //THEN
-        assertThat(result).isEqualTo("Ab Cd");
-    }
-
-    @Test
-    public void join_oneString_defaultSeparator() {
-        //GIVEN
-        String[] strings = {"a"};
-
-        //WHEN
-        String result = StringUtil.join(strings);
-
-        //THEN
-        assertThat(result).isEqualTo("a");
-    }
-
-    @Test
-    public void join_twoStrings_defaultSeparator() {
-        //GIVEN
-        String[] strings = {"a", "b"};
-
-        //WHEN
-        String result = StringUtil.join(strings);
-
-        //THEN
-        assertThat(result).isEqualTo("a, b");
-    }
-
-    @Test
-    public void join_oneString_customSeparator() {
-        //GIVEN
-        String[] strings = {"a"};
+    @ParameterizedTest
+    @ValueSource(strings = {"a", "a;b"})
+    void join_variousInputs(String expectedResult) {
+        // WHEN
+        String[] strings = expectedResult.split(";");
         String separator = ";";
-
-        //WHEN
         String result = StringUtil.join(separator, strings);
 
-        //THEN
-        assertThat(result).isEqualTo("a");
-    }
-
-    @Test
-    public void join_twoStrings_customSeparator() {
-        //GIVEN
-        String[] strings = {"a", "b"};
-        String separator = ";";
-
-        //WHEN
-        String result = StringUtil.join(separator, strings);
-
-        //THEN
-        assertThat(result).isEqualTo("a;b");
+        // THEN
+        assertThat(result).isEqualTo(expectedResult);
     }
 }

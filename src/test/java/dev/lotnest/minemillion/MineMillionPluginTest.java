@@ -1,32 +1,29 @@
 package dev.lotnest.minemillion;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(JUnit4.class)
-public class MineMillionPluginTest {
+class MineMillionPluginTest {
 
-    private MineMillionPlugin testee;
+    private static MineMillionPlugin testee;
 
-    @Before
-    public void setUp() {
+    @BeforeAll
+    public static void setUp() {
         MockBukkit.mock();
         testee = MockBukkit.load(MineMillionPlugin.class);
     }
 
-    @After
-    public void tearDown() {
+    @AfterAll
+    public static void tearDown() {
         MockBukkit.unmock();
     }
 
     @Test
-    public void onEnable() {
+    void onEnable() {
         // WHEN
         testee.onEnable();
 

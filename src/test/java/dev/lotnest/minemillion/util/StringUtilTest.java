@@ -3,13 +3,11 @@ package dev.lotnest.minemillion.util;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(JUnit4.class)
 class StringUtilTest {
+
     @ParameterizedTest
     @ValueSource(strings = {"", "a", "ab", "ab cd"})
     void capitalize_variousInputs(String string) {

@@ -8,20 +8,23 @@ public abstract class ScheduledMineMillionTask extends MineMillionTask {
     private final long period;
     private final boolean isAsync;
 
-    public ScheduledMineMillionTask(MineMillionPlugin plugin, long delay, long period, boolean isAsync) {
+    protected ScheduledMineMillionTask(MineMillionPlugin plugin, long delay, long period, boolean isAsync) {
         super(plugin);
         this.delay = delay;
         this.period = period;
         this.isAsync = isAsync;
     }
 
-    @Override
-    public void run() {
-        if (isAsync) {
-            runTaskAsynchronously(plugin);
-        } else {
-            if (delay < 0) {
+    public void schedule() {
+        if (period < 0) {
+            if (isAsync) {
+                runTaskAsynchronously(plugin);
+            } else {
                 runTask(plugin);
+            }
+        } else {
+            if (isAsync) {
+                runTaskTimerAsynchronously(plugin, delay, period);
             } else {
                 runTaskTimer(plugin, delay, period);
             }

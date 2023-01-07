@@ -48,7 +48,7 @@ public class LanguageProviderTest {
     @Test
     void constructor_polishLanguage() {
         // GIVEN
-        Language result = Language.POLISH;
+        Language result = Language.POLISH_PL;
 
         //WHEN
         testee = new LanguageProvider(plugin, result);

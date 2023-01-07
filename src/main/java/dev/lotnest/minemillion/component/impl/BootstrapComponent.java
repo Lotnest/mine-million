@@ -3,12 +3,12 @@ package dev.lotnest.minemillion.component.impl;
 import dev.lotnest.minemillion.MineMillionPlugin;
 import dev.lotnest.minemillion.component.Component;
 import dev.lotnest.minemillion.component.ComponentResult;
-import dev.lotnest.minemillion.language.LanguageProvider;
 import dev.lotnest.minemillion.util.StringUtil;
 
 public class BootstrapComponent extends Component {
 
     private static final String BOOT_FIGLET_MESSAGE = """
+                        
             '##::::'##:'####:'##::: ##:'########:'##::::'##:'####:'##:::::::'##:::::::'####::'#######::'##::: ##:
              ###::'###:. ##:: ###:: ##: ##.....:: ###::'###:. ##:: ##::::::: ##:::::::. ##::'##.... ##: ###:: ##:
              ####'####:: ##:: ####: ##: ##::::::: ####'####:: ##:: ##::::::: ##:::::::: ##:: ##:::: ##: ####: ##:
@@ -19,12 +19,10 @@ public class BootstrapComponent extends Component {
             ..:::::..::....::..::::..::........::..:::::..::....::........::........::....:::.......:::..::::..::
             """;
 
-    private final LanguageProvider languageProvider;
     private boolean isInitialized;
 
     public BootstrapComponent(MineMillionPlugin plugin) {
         super(plugin);
-        this.languageProvider = plugin.getLanguageProvider();
     }
 
     @Override
@@ -35,7 +33,7 @@ public class BootstrapComponent extends Component {
 
         plugin.getLogger().info(BOOT_FIGLET_MESSAGE);
         plugin.getLogger().info(
-                languageProvider.get("general.pluginInfo", plugin.getDescription().getVersion(),
+                plugin.getLanguageProvider().get("general.pluginInfo", plugin.getDescription().getVersion(),
                         StringUtil.join(plugin.getDescription().getAuthors()))
         );
 

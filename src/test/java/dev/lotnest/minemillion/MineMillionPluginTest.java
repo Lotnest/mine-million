@@ -29,6 +29,9 @@ class MineMillionPluginTest {
 
         // THEN
         assertThat(MineMillionPlugin.getInstance()).isNotNull();
+        assertThat(testee.getConfigHandler()).isNotNull();
         assertThat(testee.getLanguageProvider()).isNotNull();
+        assertThat(testee.getComponentRegistry()).isNotNull();
+        assertThat(testee.getTaskManager()).isNotNull();
     }
 }

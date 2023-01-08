@@ -1,13 +1,13 @@
 package dev.lotnest.minemillion.task.impl;
 
 import dev.lotnest.minemillion.MineMillionPlugin;
-import dev.lotnest.minemillion.component.impl.ScoreboardComponent;
 import dev.lotnest.minemillion.scoreboard.MineMillionScoreboard;
 import dev.lotnest.minemillion.task.ScheduledMineMillionTask;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class ScoreboardTask extends ScheduledMineMillionTask {
-
-    private MineMillionScoreboard scoreboard;
 
     public ScoreboardTask(MineMillionPlugin plugin) {
         super(plugin, 0, 20, false);
@@ -15,15 +15,13 @@ public class ScoreboardTask extends ScheduledMineMillionTask {
 
     @Override
     public void run() {
-        if (scoreboard == null) {
-            ScoreboardComponent scoreboardComponent = plugin.getComponentRegistry().getComponent(ScoreboardComponent.class);
-            if (scoreboardComponent.isInitialized()) {
-                scoreboard = scoreboardComponent.getScoreboard();
-            }
-        }
-
-        if (scoreboard != null) {
-            scoreboard.showToAllPlayers();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            MineMillionScoreboard scoreboard = new MineMillionScoreboard(player);
+            scoreboard.addEmptyEntry();
+            scoreboard.addEntry(ChatColor.YELLOW + "Using language: %s", ChatColor.GOLD + plugin.getLanguageProvider().getLanguage().getNativeName());
+            scoreboard.addEmptyEntry();
+            scoreboard.addEntry(ChatColor.YELLOW + "First played millis: %s", ChatColor.GOLD.toString() + plugin.getPlayerCache().getOrCreate(player).getFirstPlayedMillis());
+            scoreboard.showToPlayer();
         }
     }
 }

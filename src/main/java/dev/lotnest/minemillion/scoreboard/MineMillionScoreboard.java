@@ -11,6 +11,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,14 +19,16 @@ public class MineMillionScoreboard {
 
     private static final String DEFAULT_TITLE = ChatColor.GOLD.toString() + ChatColor.BOLD + "MineMillion";
 
+    private final Player player;
     private final Scoreboard scoreboard;
     private final Objective objective;
 
-    public MineMillionScoreboard() {
-        this(DEFAULT_TITLE);
+    public MineMillionScoreboard(Player player) {
+        this(player, DEFAULT_TITLE);
     }
 
-    public MineMillionScoreboard(String title) {
+    public MineMillionScoreboard(Player player, String title) {
+        this.player = player;
         scoreboard = requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
         objective = scoreboard.registerNewObjective("MM-" + UUID.randomUUID(), Criteria.DUMMY, title);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -40,17 +43,16 @@ public class MineMillionScoreboard {
             placeholders = new String[0];
         }
 
-        text = text.formatted(placeholders);
+        text = String.format(text, placeholders);
 
         Team team = scoreboard.getTeam(text);
         if (team == null) {
             team = scoreboard.registerNewTeam(text);
         }
-
         team.addEntry(text);
         team.setDisplayName(text);
 
-        int scoreToSet = scoreboard.getEntries().size() + 1;
+        int scoreToSet = 16 - scoreboard.getEntries().size();
         for (String entry : scoreboard.getEntries()) {
             int currentScore = objective.getScore(entry).getScore();
             if (scoreToSet > currentScore) {
@@ -62,13 +64,23 @@ public class MineMillionScoreboard {
         entryScore.setScore(scoreToSet);
     }
 
-    public void removeEntry(String text) {
-        Team team = scoreboard.getTeam(text);
-        if (team != null) {
-            team.unregister();
+    public void addEmptyEntry() {
+        StringBuilder emptyEntryBuilder = new StringBuilder();
+        ChatColor[] chatColors = ChatColor.values();
+
+        for (int i = 0; i < 10; i++) {
+            ChatColor randomColor = chatColors[ThreadLocalRandom.current().nextInt(chatColors.length)];
+            emptyEntryBuilder.append(randomColor);
         }
 
-        scoreboard.resetScores(text);
+        String emptyEntry = emptyEntryBuilder.toString();
+
+        while (scoreboard.getEntries().contains(emptyEntry)) {
+            emptyEntryBuilder.append(" ");
+            emptyEntry = emptyEntryBuilder.toString();
+        }
+
+        addEntry(emptyEntry);
     }
 
     public void clearEntries() {
@@ -77,21 +89,17 @@ public class MineMillionScoreboard {
         }
     }
 
-    public boolean isShownToPlayer(Player player) {
-        return player != null && player.getScoreboard().equals(scoreboard);
+    private boolean isPlayerOnline() {
+        return player != null && player.isOnline();
     }
 
-    public void showToPlayer(Player player) {
-        if (player == null) {
-            return;
-        }
-
-        player.setScoreboard(scoreboard);
+    public boolean isShownToPlayer() {
+        return isPlayerOnline() && player.getScoreboard().equals(scoreboard);
     }
 
-    public void showToAllPlayers() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            showToPlayer(player);
+    public void showToPlayer() {
+        if (isPlayerOnline()) {
+            player.setScoreboard(scoreboard);
         }
     }
 }

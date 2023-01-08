@@ -2,7 +2,6 @@ package dev.lotnest.minemillion.component;
 
 import dev.lotnest.minemillion.MineMillionPlugin;
 import dev.lotnest.minemillion.component.impl.BootstrapComponent;
-import dev.lotnest.minemillion.component.impl.ScoreboardComponent;
 import dev.lotnest.minemillion.util.exception.ComponentNotFoundException;
 
 public class ComponentRegistry {
@@ -13,8 +12,7 @@ public class ComponentRegistry {
     public ComponentRegistry(MineMillionPlugin plugin) {
         this.plugin = plugin;
         components = new Component[]{
-                new BootstrapComponent(plugin),
-                new ScoreboardComponent(plugin)
+                new BootstrapComponent(plugin)
         };
 
         initializeAll();

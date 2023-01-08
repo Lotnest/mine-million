@@ -1,2 +1,13 @@
 # List of languages can be found at: LINK_HERE
 language: en_US
+
+# MySQL Database
+mysql:
+  # MySQL host:port
+  host: localhost:3306
+  # MySQL database name, you will need to make sure this database exists
+  database: minemillion
+  # MySQL username
+  username: root
+  # MySQL password
+  password:

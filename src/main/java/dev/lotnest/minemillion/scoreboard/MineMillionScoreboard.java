@@ -9,6 +9,8 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,11 +40,7 @@ public class MineMillionScoreboard {
         addEntry(text, "");
     }
 
-    public void addEntry(String text, Object... placeholders) {
-        if (placeholders == null) {
-            placeholders = new String[0];
-        }
-
+    public void addEntry(@NotNull String text, @Nullable Object... placeholders) {
         text = String.format(text, placeholders);
 
         Team team = scoreboard.getTeam(text);

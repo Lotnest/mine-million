@@ -1,7 +1,9 @@
 package dev.lotnest.minemillion.db;
 
 import dev.lotnest.minemillion.MineMillionPlugin;
-import dev.lotnest.minemillion.language.LanguageProvider;
+import dev.lotnest.minemillion.util.LoggerUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,21 +12,14 @@ import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 
 public interface BaseDAO {
 
     MineMillionPlugin plugin = MineMillionPlugin.getInstance();
-    LanguageProvider languageProvider = plugin.getLanguageProvider();
     ExecutorService executorService = Executors.newFixedThreadPool(2);
     MySQLConnectionHolder connectionHolder = plugin.getConnectionHolder();
 
-    default void executeQuery(String query, Object... args) {
-        if (query == null || query.isEmpty()) {
-            plugin.getLogger().warning(languageProvider.get("database.sqlQueryEmpty"));
-            return;
-        }
-
+    default void executeQuery(@NotNull String query, @Nullable Object... args) {
         executorService.submit(() -> {
             try (Connection connection = connectionHolder.getConnection();
                  PreparedStatement statement = connection.prepareStatement(query)) {
@@ -34,17 +29,12 @@ public interface BaseDAO {
 
                 statement.execute();
             } catch (SQLException exception) {
-                plugin.getLogger().log(Level.SEVERE, languageProvider.get("database.sqlQueryFailed", query), exception);
+                LoggerUtil.severe("database.sqlQueryFailed", exception, query);
             }
         });
     }
 
-    default void selectQuery(String query, Consumer<ResultSet> callback, Object... args) {
-        if (query == null || query.isEmpty()) {
-            plugin.getLogger().warning(languageProvider.get("database.sqlQueryEmpty"));
-            return;
-        }
-
+    default void selectQuery(@NotNull String query, @NotNull Consumer<ResultSet> callback, @Nullable Object... args) {
         executorService.submit(() -> {
             try (Connection connection = connectionHolder.getConnection();
                  PreparedStatement statement = connection.prepareStatement(query)) {
@@ -54,7 +44,7 @@ public interface BaseDAO {
 
                 callback.accept(statement.executeQuery());
             } catch (SQLException exception) {
-                plugin.getLogger().log(Level.SEVERE, languageProvider.get("database.sqlQueryFailed", query), exception);
+                LoggerUtil.severe("database.sqlQueryFailed", exception, query);
             }
         });
     }

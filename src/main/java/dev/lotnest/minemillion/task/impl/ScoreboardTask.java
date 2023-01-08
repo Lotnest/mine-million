@@ -6,10 +6,11 @@ import dev.lotnest.minemillion.task.ScheduledMineMillionTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class ScoreboardTask extends ScheduledMineMillionTask {
 
-    public ScoreboardTask(MineMillionPlugin plugin) {
+    public ScoreboardTask(@NotNull MineMillionPlugin plugin) {
         super(plugin, 0, 20, false);
     }
 

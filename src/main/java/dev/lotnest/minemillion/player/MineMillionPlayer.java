@@ -3,6 +3,7 @@ package dev.lotnest.minemillion.player;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Setter
 public class MineMillionPlayer {
 
-    private final UUID playerUUID;
+    private final @NotNull UUID playerUUID;
     private long firstPlayedMillis;
     private long lastPlayedMillis;
     private int gamesPlayed;

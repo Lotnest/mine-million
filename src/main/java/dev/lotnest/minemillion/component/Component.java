@@ -2,15 +2,16 @@ package dev.lotnest.minemillion.component;
 
 import dev.lotnest.minemillion.MineMillionPlugin;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
 public abstract class Component {
 
-    protected final MineMillionPlugin plugin;
+    protected final @NotNull MineMillionPlugin plugin;
 
-    public abstract ComponentResult initialize();
+    public abstract @NotNull ComponentResult initialize();
 
     public abstract boolean isInitialized();
 
-    public abstract ComponentResult shutdown();
+    public abstract @NotNull ComponentResult shutdown();
 }

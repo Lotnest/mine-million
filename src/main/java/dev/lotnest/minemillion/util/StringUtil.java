@@ -1,13 +1,15 @@
 package dev.lotnest.minemillion.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 public class StringUtil {
 
     private StringUtil() {
     }
 
-    public static String capitalize(String string) {
+    public static @NotNull String capitalize(String string) {
         if (StringUtils.isBlank(string)) {
             return "";
         }
@@ -15,7 +17,7 @@ public class StringUtil {
         return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
 
-    public static String capitalizeFully(String string) {
+    public static @NotNull String capitalizeFully(String string) {
         if (StringUtils.isBlank(string)) {
             return "";
         }
@@ -30,19 +32,23 @@ public class StringUtil {
         return wordsBuilder.toString().trim();
     }
 
-    public static String join(String... strings) {
+    @Contract("_ -> new")
+    public static @NotNull String join(@NotNull String... strings) {
         return join(", ", strings);
     }
 
-    public static String join(Iterable<String> strings) {
+    @Contract("_ -> new")
+    public static @NotNull String join(@NotNull Iterable<String> strings) {
         return join(", ", strings);
     }
 
-    public static String join(String separator, String... strings) {
+    @Contract("_, _ -> new")
+    public static @NotNull String join(@NotNull String separator, @NotNull String... strings) {
         return String.join(separator, strings);
     }
 
-    public static String join(String separator, Iterable<String> strings) {
+    @Contract("_, _ -> new")
+    public static @NotNull String join(@NotNull String separator, @NotNull Iterable<String> strings) {
         return String.join(separator, strings);
     }
 }

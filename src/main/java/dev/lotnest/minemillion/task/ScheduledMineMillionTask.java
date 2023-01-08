@@ -1,6 +1,7 @@
 package dev.lotnest.minemillion.task;
 
 import dev.lotnest.minemillion.MineMillionPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ScheduledMineMillionTask extends MineMillionTask {
 
@@ -8,7 +9,7 @@ public abstract class ScheduledMineMillionTask extends MineMillionTask {
     private final long period;
     private final boolean isAsync;
 
-    protected ScheduledMineMillionTask(MineMillionPlugin plugin, long delay, long period, boolean isAsync) {
+    protected ScheduledMineMillionTask(@NotNull MineMillionPlugin plugin, long delay, long period, boolean isAsync) {
         super(plugin);
         this.delay = delay;
         this.period = period;

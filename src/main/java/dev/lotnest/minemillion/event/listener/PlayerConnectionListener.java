@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
 public class PlayerConnectionListener implements Listener {
@@ -14,7 +15,7 @@ public class PlayerConnectionListener implements Listener {
     private final MineMillionPlugin plugin;
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onJoin(PlayerJoinEvent event) {
+    public void onJoin(@NotNull PlayerJoinEvent event) {
         MineMillionPlayer mineMillionPlayer = plugin.getPlayerCache().getOrCreate(event.getPlayer().getUniqueId());
         if (mineMillionPlayer.getFirstPlayedMillis() == 0L) {
             mineMillionPlayer.setFirstPlayedMillis(System.currentTimeMillis());
@@ -25,7 +26,7 @@ public class PlayerConnectionListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onQuit(PlayerJoinEvent event) {
+    public void onQuit(@NotNull PlayerJoinEvent event) {
         MineMillionPlayer mineMillionPlayer = plugin.getPlayerCache().getOrCreate(event.getPlayer().getUniqueId());
         mineMillionPlayer.setLastPlayedMillis(System.currentTimeMillis());
         plugin.getPlayerCache().update(mineMillionPlayer);

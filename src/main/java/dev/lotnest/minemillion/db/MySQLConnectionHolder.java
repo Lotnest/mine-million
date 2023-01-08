@@ -4,12 +4,11 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import dev.lotnest.minemillion.MineMillionPlugin;
 import dev.lotnest.minemillion.file.ConfigHandler;
-import dev.lotnest.minemillion.language.LanguageProvider;
+import dev.lotnest.minemillion.util.LoggerUtil;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 @RequiredArgsConstructor
 public class MySQLConnectionHolder implements BaseDAO {
@@ -18,13 +17,11 @@ public class MySQLConnectionHolder implements BaseDAO {
     private HikariDataSource hikariDataSource;
 
     public void connect() {
-        LanguageProvider languageProvider = plugin.getLanguageProvider();
-
         try {
+            LoggerUtil.info("database.connecting");
+
             HikariConfig hikariConfig = new HikariConfig();
             ConfigHandler configHandler = plugin.getConfigHandler();
-
-            plugin.getLogger().info(languageProvider.get("database.connecting"));
 
             hikariConfig.setDriverClassName("com.mysql.jdbc.Driver");
             hikariConfig.setJdbcUrl("jdbc:mysql://" + configHandler.getMySQLHost() + "/" + configHandler.getMySQLDatabase());
@@ -41,9 +38,9 @@ public class MySQLConnectionHolder implements BaseDAO {
 
             hikariDataSource = new HikariDataSource(hikariConfig);
 
-            plugin.getLogger().info(languageProvider.get("database.connected"));
+            LoggerUtil.info("database.connected");
         } catch (Exception exception) {
-            plugin.getLogger().log(Level.SEVERE, languageProvider.get("database.connectionFailed"), exception);
+            LoggerUtil.severe("database.connectionFailed", exception);
             plugin.getPluginLoader().disablePlugin(plugin);
         }
     }
@@ -62,7 +59,7 @@ public class MySQLConnectionHolder implements BaseDAO {
         try {
             return hikariDataSource.getConnection();
         } catch (SQLException exception) {
-            plugin.getLogger().log(Level.SEVERE, plugin.getLanguageProvider().get("database.connectionFailed"), exception);
+            LoggerUtil.severe("database.connectionFailed", exception);
             return null;
         }
     }

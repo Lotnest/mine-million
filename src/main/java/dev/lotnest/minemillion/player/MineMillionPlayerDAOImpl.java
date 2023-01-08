@@ -1,9 +1,11 @@
 package dev.lotnest.minemillion.player;
 
+import dev.lotnest.minemillion.util.LoggerUtil;
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
 
@@ -43,11 +45,7 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
     }
 
     @Override
-    public Optional<MineMillionPlayer> get(UUID uuid) {
-        if (uuid == null) {
-            return Optional.empty();
-        }
-
+    public Optional<MineMillionPlayer> get(@NotNull UUID uuid) {
         MineMillionPlayer[] player = {null};
 
         selectQuery(GET_PLAYER_SQL, resultSet -> {
@@ -72,7 +70,7 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
                             .build();
                 }
             } catch (SQLException exception) {
-                plugin.getLogger().log(Level.SEVERE, languageProvider.get("database.sqlQueryFailed", GET_PLAYER_SQL), exception);
+                LoggerUtil.severe("database.sqlQueryFailed", exception, GET_PLAYER_SQL);
             }
         }, uuid.toString());
 
@@ -80,11 +78,7 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
     }
 
     @Override
-    public void create(MineMillionPlayer player) {
-        if (player == null) {
-            return;
-        }
-
+    public void create(@NotNull MineMillionPlayer player) {
         executeQuery(CREATE_NEW_PLAYER_SQL, player.getPlayerUUID().toString(), player.getFirstPlayedMillis(), player.getLastPlayedMillis(),
                 player.getGamesPlayed(), player.getGamesWon(), player.getGamesLost(), player.getCorrectAnswers(), player.getWrongAnswers(),
                 player.getCashWon(), player.getBestCashWon(), player.getLifelineFiftyFiftyUsed(), player.getLifelinePhoneAFriendUsed(),
@@ -92,11 +86,7 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
     }
 
     @Override
-    public void update(MineMillionPlayer updatedPlayer) {
-        if (updatedPlayer == null) {
-            return;
-        }
-
+    public void update(@NotNull MineMillionPlayer updatedPlayer) {
         executeQuery(UPDATE_PLAYER_SQL, updatedPlayer.getFirstPlayedMillis(), updatedPlayer.getLastPlayedMillis(), updatedPlayer.getGamesPlayed(),
                 updatedPlayer.getGamesWon(), updatedPlayer.getGamesLost(), updatedPlayer.getCorrectAnswers(), updatedPlayer.getWrongAnswers(),
                 updatedPlayer.getCashWon(), updatedPlayer.getBestCashWon(), updatedPlayer.getLifelineFiftyFiftyUsed(),

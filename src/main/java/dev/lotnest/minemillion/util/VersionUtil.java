@@ -2,13 +2,14 @@ package dev.lotnest.minemillion.util;
 
 import dev.lotnest.minemillion.MineMillionPlugin;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class VersionUtil {
 
     private VersionUtil() {
     }
 
-    public static String getVersion() {
+    public static @NotNull String getVersion() {
         return MineMillionPlugin.getInstance().getDescription().getVersion();
     }
 
@@ -16,11 +17,7 @@ public class VersionUtil {
         return StringUtils.equals(getVersion(), versionToCheckAgainstCurrent);
     }
 
-    public static boolean isNewerVersion(String versionToCheckAgainstCurrent) {
-        if (StringUtils.isBlank(versionToCheckAgainstCurrent)) {
-            return false;
-        }
-
+    public static boolean isNewerVersion(@NotNull String versionToCheckAgainstCurrent) {
         String[] currentParts = getVersion().replaceAll("-SNAPSHOT$", "").split("\\.");
         String[] latestParts = versionToCheckAgainstCurrent.replaceAll("-SNAPSHOT$", "").split("\\.");
         int maxLength = Math.max(currentParts.length, latestParts.length);

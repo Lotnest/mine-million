@@ -2,8 +2,8 @@ package dev.lotnest.minemillion.player;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -13,25 +13,18 @@ public class MineMillionPlayerCache {
     private final Cache<UUID, MineMillionPlayer> cache;
     private final MineMillionPlayerDAO dao;
 
-    public MineMillionPlayerCache(MineMillionPlayerDAO dao) {
-        this.dao = Validate.notNull(dao, "MineMillionPlayerDAO can't be null");
+    public MineMillionPlayerCache(@NotNull MineMillionPlayerDAO dao) {
+        this.dao = dao;
         cache = CacheBuilder.newBuilder()
                 .expireAfterWrite(30, TimeUnit.MINUTES)
                 .build();
     }
 
-    public MineMillionPlayer getOrCreate(Player player) {
-        if (player == null) {
-            return null;
-        }
+    public MineMillionPlayer getOrCreate(@NotNull Player player) {
         return getOrCreate(player.getUniqueId());
     }
 
-    public MineMillionPlayer getOrCreate(UUID playerUUID) {
-        if (playerUUID == null) {
-            return null;
-        }
-
+    public MineMillionPlayer getOrCreate(@NotNull UUID playerUUID) {
         MineMillionPlayer result = cache.getIfPresent(playerUUID);
 
         if (result != null) {
@@ -48,11 +41,11 @@ public class MineMillionPlayerCache {
         return result;
     }
 
-    public void invalidate(UUID uuid) {
+    public void invalidate(@NotNull UUID uuid) {
         cache.invalidate(uuid);
     }
 
-    public void update(MineMillionPlayer updatedMineMillionPlayer) {
+    public void update(@NotNull MineMillionPlayer updatedMineMillionPlayer) {
         MineMillionPlayer player = cache.getIfPresent(updatedMineMillionPlayer.getPlayerUUID());
         if (player != null) {
             dao.update(player);

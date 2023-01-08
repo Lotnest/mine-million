@@ -2,22 +2,20 @@ package dev.lotnest.minemillion.player;
 
 import dev.lotnest.minemillion.db.BaseDAO;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface MineMillionPlayerDAO extends BaseDAO {
 
-    Optional<MineMillionPlayer> get(UUID uuid);
+    Optional<MineMillionPlayer> get(@NotNull UUID uuid);
 
-    default Optional<MineMillionPlayer> get(Player player) {
-        if (player == null) {
-            return Optional.empty();
-        }
+    default Optional<MineMillionPlayer> get(@NotNull Player player) {
         return get(player.getUniqueId());
     }
 
-    void create(MineMillionPlayer player);
+    void create(@NotNull MineMillionPlayer player);
 
-    void update(MineMillionPlayer updatedPlayer);
+    void update(@NotNull MineMillionPlayer updatedPlayer);
 }

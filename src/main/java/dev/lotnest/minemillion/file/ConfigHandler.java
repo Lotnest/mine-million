@@ -5,6 +5,7 @@ import dev.lotnest.minemillion.language.Language;
 import lombok.Getter;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
@@ -17,7 +18,7 @@ public class ConfigHandler {
     private final File file;
     private final YamlConfiguration yaml;
 
-    public ConfigHandler(MineMillionPlugin plugin) {
+    public ConfigHandler(@NotNull MineMillionPlugin plugin) {
         this.plugin = Validate.notNull(plugin, "Plugin can't be null");
 
         if (!plugin.getDataFolder().exists()) {

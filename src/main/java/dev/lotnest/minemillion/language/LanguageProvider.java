@@ -2,9 +2,11 @@ package dev.lotnest.minemillion.language;
 
 import com.google.common.collect.Maps;
 import dev.lotnest.minemillion.MineMillionPlugin;
+import dev.lotnest.minemillion.util.exception.FileFailedToLoadException;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Map;
@@ -18,9 +20,10 @@ public class LanguageProvider {
     private Map<String, String> languageMap;
     private Language language;
 
-    public LanguageProvider(MineMillionPlugin plugin, Language language) {
+    public LanguageProvider(@NotNull MineMillionPlugin plugin, @NotNull Language language) {
         this.plugin = plugin;
-        this.language = language == null ? Language.ENGLISH_US : language;
+        this.language = language;
+
         loadLanguageMapFromCurrentLanguageFile();
     }
 
@@ -33,7 +36,7 @@ public class LanguageProvider {
             languageMap = Maps.newHashMap();
             properties.forEach((key, value) -> languageMap.put(key.toString(), value.toString()));
         } catch (IOException exception) {
-            throw new RuntimeException("Could not load " + languageFileName, exception);
+            throw new FileFailedToLoadException(languageFileName, exception);
         }
     }
 

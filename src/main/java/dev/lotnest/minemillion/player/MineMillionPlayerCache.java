@@ -5,7 +5,10 @@ import com.google.common.cache.CacheBuilder;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class MineMillionPlayerCache {
@@ -20,25 +23,41 @@ public class MineMillionPlayerCache {
                 .build();
     }
 
-    public MineMillionPlayer getOrCreate(@NotNull Player player) {
+    public @NotNull CompletableFuture<MineMillionPlayer> getOrCreate(@NotNull Player player) {
         return getOrCreate(player.getUniqueId());
     }
 
-    public MineMillionPlayer getOrCreate(@NotNull UUID playerUUID) {
-        MineMillionPlayer result = cache.getIfPresent(playerUUID);
+    public @NotNull CompletableFuture<MineMillionPlayer> getOrCreate(@NotNull UUID playerUUID) {
+        return CompletableFuture.supplyAsync(() -> {
+            MineMillionPlayer cachedResult = cache.getIfPresent(playerUUID);
 
-        if (result != null) {
-            return result;
-        }
+            if (cachedResult != null) {
+                return cachedResult;
+            }
 
-        result = dao.get(playerUUID).orElseGet(() -> {
-            MineMillionPlayer mineMillionPlayer = MineMillionPlayer.builder().playerUUID(playerUUID).build();
-            dao.create(mineMillionPlayer);
-            return mineMillionPlayer;
+            return dao.get(playerUUID).thenApply(optionalMineMillionPlayer -> {
+                        MineMillionPlayer result = null;
+
+                        if (optionalMineMillionPlayer.isEmpty()) {
+                            optionalMineMillionPlayer = Optional.of(
+                                    MineMillionPlayer.builder()
+                                            .uuid(playerUUID)
+                                            .build()
+                            );
+
+                            result = optionalMineMillionPlayer.get();
+                            dao.create(result);
+                            cache.put(playerUUID, result);
+                        }
+
+                        if (result == null) {
+                            result = optionalMineMillionPlayer.get();
+                        }
+
+                        return result;
+                    })
+                    .join();
         });
-        cache.put(playerUUID, result);
-
-        return result;
     }
 
     public void invalidate(@NotNull UUID uuid) {
@@ -46,9 +65,8 @@ public class MineMillionPlayerCache {
     }
 
     public void update(@NotNull MineMillionPlayer updatedMineMillionPlayer) {
-        MineMillionPlayer player = cache.getIfPresent(updatedMineMillionPlayer.getPlayerUUID());
-        if (player != null) {
-            dao.update(player);
-        }
+        MineMillionPlayer player = cache.getIfPresent(updatedMineMillionPlayer.getUuid());
+        dao.update(Objects.requireNonNullElse(player, updatedMineMillionPlayer));
+        cache.put(updatedMineMillionPlayer.getUuid(), updatedMineMillionPlayer);
     }
 }

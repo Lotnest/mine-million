@@ -94,6 +94,16 @@
             <artifactId>adventure-api</artifactId>
             <version>4.12.0</version>
         </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>3.17.6</version>
+        </dependency>
     </dependencies>
 
     <build>

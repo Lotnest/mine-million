@@ -8,3 +8,4 @@ libraries:
   - org.apache.commons:commons-lang3:3.12.0
   - com.google.code.gson:gson:2.10
   - com.zaxxer:HikariCP:5.0.1
+  - org.jooq:jooq:3.17.6

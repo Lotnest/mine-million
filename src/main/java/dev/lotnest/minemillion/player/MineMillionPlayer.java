@@ -12,23 +12,24 @@ import java.util.UUID;
 @Setter
 public class MineMillionPlayer {
 
-    private final @NotNull UUID playerUUID;
+    private final @NotNull UUID uuid;
     private long firstPlayedMillis;
     private long lastPlayedMillis;
-    private int gamesPlayed;
-    private int gamesWon;
-    private int gamesLost;
-    private int correctAnswers;
-    private int wrongAnswers;
-    private int cashWon;
-    private int bestCashWon;
-    private int lifelineFiftyFiftyUsed;
-    private int lifelinePhoneAFriendUsed;
-    private int lifelineAskTheAudienceUsed;
-    private int lifelineDoubleDipUsed;
-    private int lifelineSwitchTheQuestionUsed;
+    private long gamesPlayed;
+    private long gamesWon;
+    private long gamesLost;
+    private long correctAnswers;
+    private long wrongAnswers;
+    private long cash;
+    private long cashWon;
+    private long highestCashWon;
+    private long lifelineFiftyFiftyUsed;
+    private long lifelinePhoneAFriendUsed;
+    private long lifelineAskTheAudienceUsed;
+    private long lifelineDoubleDipUsed;
+    private long lifelineSwitchTheQuestionUsed;
 
-    public int getLifelinesUsed() {
+    public long getLifelinesUsed() {
         return lifelineFiftyFiftyUsed + lifelinePhoneAFriendUsed + lifelineAskTheAudienceUsed + lifelineDoubleDipUsed + lifelineSwitchTheQuestionUsed;
     }
 }

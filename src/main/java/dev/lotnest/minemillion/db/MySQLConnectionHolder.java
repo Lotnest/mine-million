@@ -6,6 +6,9 @@ import dev.lotnest.minemillion.MineMillionPlugin;
 import dev.lotnest.minemillion.file.ConfigHandler;
 import dev.lotnest.minemillion.util.LoggerUtil;
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -15,6 +18,7 @@ public class MySQLConnectionHolder implements BaseDAO {
 
     private final MineMillionPlugin plugin;
     private HikariDataSource hikariDataSource;
+    private DSLContext dslContext;
 
     public void connect() {
         try {
@@ -37,6 +41,9 @@ public class MySQLConnectionHolder implements BaseDAO {
             hikariConfig.setPoolName("MineMillion-Pool");
 
             hikariDataSource = new HikariDataSource(hikariConfig);
+
+            dslContext = DSL.using(hikariDataSource, SQLDialect.MYSQL);
+            dslContext.createDatabaseIfNotExists("minemillion").execute();
 
             LoggerUtil.info("database.connected");
         } catch (Exception exception) {
@@ -62,5 +69,9 @@ public class MySQLConnectionHolder implements BaseDAO {
             LoggerUtil.severe("database.connectionFailed", exception);
             return null;
         }
+    }
+
+    public DSLContext getDSLContext() {
+        return dslContext;
     }
 }

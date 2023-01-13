@@ -4,6 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class StringUtil {
 
     private StringUtil() {
@@ -50,5 +53,17 @@ public class StringUtil {
     @Contract("_, _ -> new")
     public static @NotNull String join(@NotNull String separator, @NotNull Iterable<String> strings) {
         return String.join(separator, strings);
+    }
+
+    public static @NotNull String getCompactedCash(long cash) {
+        return NumberFormat.getCompactNumberInstance().format(cash) + " USD";
+    }
+
+    public static @NotNull String getSeperatedCash(long cash) {
+        return NumberFormat.getCurrencyInstance(Locale.US)
+                .format(cash)
+                .replace("$", "")
+                .replace(".00", "")
+                + " USD";
     }
 }

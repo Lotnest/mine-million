@@ -3,13 +3,10 @@ package dev.lotnest.minemillion.file;
 import dev.lotnest.minemillion.MineMillionPlugin;
 import dev.lotnest.minemillion.language.Language;
 import lombok.Getter;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-
-import static java.util.Objects.requireNonNull;
 
 @Getter
 public class ConfigHandler {
@@ -19,7 +16,7 @@ public class ConfigHandler {
     private final YamlConfiguration yaml;
 
     public ConfigHandler(@NotNull MineMillionPlugin plugin) {
-        this.plugin = Validate.notNull(plugin, "Plugin can't be null");
+        this.plugin = plugin;
 
         if (!plugin.getDataFolder().exists()) {
             plugin.getDataFolder().mkdir();
@@ -33,8 +30,8 @@ public class ConfigHandler {
         yaml = YamlConfiguration.loadConfiguration(file);
     }
 
-    private String getString(String path) {
-        return requireNonNull(yaml.getString(path), "config.yml: " + path + " can't be empty");
+    private String getString(@NotNull String path) {
+        return yaml.getString(path);
     }
 
     public Language getLanguage() {

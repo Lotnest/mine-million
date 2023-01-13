@@ -1,96 +1,120 @@
 package dev.lotnest.minemillion.player;
 
-import dev.lotnest.minemillion.util.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
 
-    private static final String CREATE_PLAYER_TABLE_IF_NOT_EXISTS_SQL = "CREATE TABLE IF NOT EXISTS `player` (" +
-            "`player_uuid` VARCHAR(36) NOT NULL," +
-            "`first_played_millis` BIGINT NOT NULL," +
-            "`last_played_millis` BIGINT NOT NULL," +
-            "`games_played` INT NOT NULL," +
-            "`games_won` INT NOT NULL," +
-            "`games_lost` INT NOT NULL," +
-            "`correct_answers` INT NOT NULL," +
-            "`wrong_answers` INT NOT NULL," +
-            "`cash_won` INT NOT NULL," +
-            "`best_cash_won` INT NOT NULL," +
-            "`lifeline_fifty_fifty_used` INT NOT NULL," +
-            "`lifeline_phone_a_friend_used` INT NOT NULL," +
-            "`lifeline_ask_the_audience_used` INT NOT NULL," +
-            "`lifeline_double_dip_used` INT NOT NULL," +
-            "`lifeline_switch_the_question_used` INT NOT NULL," +
-            "PRIMARY KEY (`player_uuid`)" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
-
-    private static final String CREATE_NEW_PLAYER_SQL = "INSERT INTO player (" +
-            "uuid, first_played, last_played, games_played, games_won, games_lost, correct_answers, wrong_answers, cash_won," +
-            " best_cash_won, lifeline_fifty_fifty_used, lifeline_phone_a_friend_used, lifeline_ask_the_audience_used, lifeline_double_dip_used," +
-            " lifeline_switch_the_question_used) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-    private static final String GET_PLAYER_SQL = "SELECT * FROM player WHERE uuid = ?";
-
-    private static final String UPDATE_PLAYER_SQL = "UPDATE player SET " +
-            "first_played = ?, last_played = ?, games_played = ?, games_won = ?, games_lost = ?, correct_answers = ?, wrong_answers = ?, cash_won = ?," +
-            " best_cash_won = ?, lifeline_fifty_fifty_used = ?, lifeline_phone_a_friend_used = ?, lifeline_ask_the_audience_used = ?, lifeline_double_dip_used = ?," +
-            " lifeline_switch_the_question_used = ? WHERE uuid = ?";
-
     public MineMillionPlayerDAOImpl() {
-        executeQuery(CREATE_PLAYER_TABLE_IF_NOT_EXISTS_SQL);
+        DSLContext dslContext = getConnectionHolder().getDSLContext();
+        dslContext.createTableIfNotExists(PLAYER_TABLE_NAME)
+                .column(UUID_COLUMN_NAME, SQLDataType.UUID.nullable(false))
+                .column(FIRST_PLAYED_MILLIS_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(LAST_PLAYED_MILLIS_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(GAMES_PLAYED_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(GAMES_WON_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(GAMES_LOST_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(CORRECT_ANSWERS_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(WRONG_ANSWERS_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(CASH_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(CASH_WON_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(HIGHEST_CASH_WON_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(LIFELINE_FIFTY_FIFTY_USED_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(LIFELINE_PHONE_A_FRIEND_USED_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(LIFELINE_ASK_THE_AUDIENCE_USED_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .column(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME, SQLDataType.BIGINT.nullable(false))
+                .constraints(DSL.constraint(PLAYER_TABLE_PRIMARY_KEY_NAME).primaryKey(UUID_COLUMN_NAME))
+                .execute();
     }
 
     @Override
-    public Optional<MineMillionPlayer> get(@NotNull UUID uuid) {
-        MineMillionPlayer[] player = {null};
-
-        selectQuery(GET_PLAYER_SQL, resultSet -> {
-            try {
-                if (resultSet.next()) {
-                    player[0] = MineMillionPlayer.builder()
-                            .playerUUID(uuid)
-                            .firstPlayedMillis(resultSet.getLong("first_played"))
-                            .lastPlayedMillis(resultSet.getLong("last_played"))
-                            .gamesPlayed(resultSet.getInt("games_played"))
-                            .gamesWon(resultSet.getInt("games_won"))
-                            .gamesLost(resultSet.getInt("games_lost"))
-                            .correctAnswers(resultSet.getInt("correct_answers"))
-                            .wrongAnswers(resultSet.getInt("wrong_answers"))
-                            .cashWon(resultSet.getInt("cash_won"))
-                            .bestCashWon(resultSet.getInt("best_cash_won"))
-                            .lifelineFiftyFiftyUsed(resultSet.getInt("lifeline_fifty_fifty_used"))
-                            .lifelinePhoneAFriendUsed(resultSet.getInt("lifeline_phone_a_friend_used"))
-                            .lifelineAskTheAudienceUsed(resultSet.getInt("lifeline_ask_the_audience_used"))
-                            .lifelineDoubleDipUsed(resultSet.getInt("lifeline_double_dip_used"))
-                            .lifelineSwitchTheQuestionUsed(resultSet.getInt("lifeline_switch_the_question_used"))
-                            .build();
-                }
-            } catch (SQLException exception) {
-                LoggerUtil.severe("database.sqlQueryFailed", exception, GET_PLAYER_SQL);
+    public @NotNull CompletableFuture<Optional<MineMillionPlayer>> get(@NotNull UUID uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            Record jooqRecord = getConnectionHolder().getDSLContext()
+                    .select()
+                    .from(PLAYER_TABLE_NAME)
+                    .where(DSL.field(UUID_COLUMN_NAME).eq(uuid.toString()))
+                    .fetchOne();
+            if (jooqRecord == null) {
+                return Optional.empty();
             }
-        }, uuid.toString());
 
-        return Optional.ofNullable(player[0]);
+            return Optional.of(
+                    MineMillionPlayer.builder()
+                            .uuid(UUID.fromString(jooqRecord.get(UUID_COLUMN_NAME, String.class)))
+                            .firstPlayedMillis(jooqRecord.get(FIRST_PLAYED_MILLIS_COLUMN_NAME, Long.class))
+                            .lastPlayedMillis(jooqRecord.get(LAST_PLAYED_MILLIS_COLUMN_NAME, Long.class))
+                            .gamesPlayed(jooqRecord.get(GAMES_PLAYED_COLUMN_NAME, Long.class))
+                            .gamesWon(jooqRecord.get(GAMES_WON_COLUMN_NAME, Long.class))
+                            .gamesLost(jooqRecord.get(GAMES_LOST_COLUMN_NAME, Long.class))
+                            .correctAnswers(jooqRecord.get(CORRECT_ANSWERS_COLUMN_NAME, Long.class))
+                            .wrongAnswers(jooqRecord.get(WRONG_ANSWERS_COLUMN_NAME, Long.class))
+                            .cash(jooqRecord.get(CASH_COLUMN_NAME, Long.class))
+                            .cashWon(jooqRecord.get(CASH_WON_COLUMN_NAME, Long.class))
+                            .highestCashWon(jooqRecord.get(HIGHEST_CASH_WON_COLUMN_NAME, Long.class))
+                            .lifelineFiftyFiftyUsed(jooqRecord.get(LIFELINE_FIFTY_FIFTY_USED_COLUMN_NAME, Long.class))
+                            .lifelinePhoneAFriendUsed(jooqRecord.get(LIFELINE_PHONE_A_FRIEND_USED_COLUMN_NAME, Long.class))
+                            .lifelineAskTheAudienceUsed(jooqRecord.get(LIFELINE_ASK_THE_AUDIENCE_USED_COLUMN_NAME, Long.class))
+                            .lifelineDoubleDipUsed(jooqRecord.get(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME, Long.class))
+                            .lifelineSwitchTheQuestionUsed(jooqRecord.get(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME, Long.class))
+                            .build()
+            );
+        });
     }
 
     @Override
     public void create(@NotNull MineMillionPlayer player) {
-        executeQuery(CREATE_NEW_PLAYER_SQL, player.getPlayerUUID().toString(), player.getFirstPlayedMillis(), player.getLastPlayedMillis(),
-                player.getGamesPlayed(), player.getGamesWon(), player.getGamesLost(), player.getCorrectAnswers(), player.getWrongAnswers(),
-                player.getCashWon(), player.getBestCashWon(), player.getLifelineFiftyFiftyUsed(), player.getLifelinePhoneAFriendUsed(),
-                player.getLifelineAskTheAudienceUsed(), player.getLifelineDoubleDipUsed(), player.getLifelineSwitchTheQuestionUsed());
+        getConnectionHolder().getDSLContext()
+                .insertInto(DSL.table(PLAYER_TABLE_NAME))
+                .columns(
+                        DSL.field(UUID_COLUMN_NAME),
+                        DSL.field(FIRST_PLAYED_MILLIS_COLUMN_NAME),
+                        DSL.field(LAST_PLAYED_MILLIS_COLUMN_NAME),
+                        DSL.field(GAMES_PLAYED_COLUMN_NAME),
+                        DSL.field(GAMES_WON_COLUMN_NAME),
+                        DSL.field(GAMES_LOST_COLUMN_NAME),
+                        DSL.field(CORRECT_ANSWERS_COLUMN_NAME),
+                        DSL.field(WRONG_ANSWERS_COLUMN_NAME),
+                        DSL.field(CASH_COLUMN_NAME),
+                        DSL.field(CASH_WON_COLUMN_NAME),
+                        DSL.field(HIGHEST_CASH_WON_COLUMN_NAME),
+                        DSL.field(LIFELINE_FIFTY_FIFTY_USED_COLUMN_NAME),
+                        DSL.field(LIFELINE_PHONE_A_FRIEND_USED_COLUMN_NAME),
+                        DSL.field(LIFELINE_ASK_THE_AUDIENCE_USED_COLUMN_NAME),
+                        DSL.field(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME),
+                        DSL.field(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME)
+                )
+                .executeAsync();
     }
 
     @Override
     public void update(@NotNull MineMillionPlayer updatedPlayer) {
-        executeQuery(UPDATE_PLAYER_SQL, updatedPlayer.getFirstPlayedMillis(), updatedPlayer.getLastPlayedMillis(), updatedPlayer.getGamesPlayed(),
-                updatedPlayer.getGamesWon(), updatedPlayer.getGamesLost(), updatedPlayer.getCorrectAnswers(), updatedPlayer.getWrongAnswers(),
-                updatedPlayer.getCashWon(), updatedPlayer.getBestCashWon(), updatedPlayer.getLifelineFiftyFiftyUsed(),
-                updatedPlayer.getLifelinePhoneAFriendUsed(), updatedPlayer.getLifelineAskTheAudienceUsed(), updatedPlayer.getLifelineDoubleDipUsed(),
-                updatedPlayer.getLifelineSwitchTheQuestionUsed(), updatedPlayer.getPlayerUUID().toString());
+        getConnectionHolder().getDSLContext()
+                .update(DSL.table(PLAYER_TABLE_NAME))
+                .set(DSL.field(FIRST_PLAYED_MILLIS_COLUMN_NAME), updatedPlayer.getFirstPlayedMillis())
+                .set(DSL.field(LAST_PLAYED_MILLIS_COLUMN_NAME), updatedPlayer.getLastPlayedMillis())
+                .set(DSL.field(GAMES_PLAYED_COLUMN_NAME), updatedPlayer.getGamesPlayed())
+                .set(DSL.field(GAMES_WON_COLUMN_NAME), updatedPlayer.getGamesWon())
+                .set(DSL.field(GAMES_LOST_COLUMN_NAME), updatedPlayer.getGamesLost())
+                .set(DSL.field(CORRECT_ANSWERS_COLUMN_NAME), updatedPlayer.getCorrectAnswers())
+                .set(DSL.field(WRONG_ANSWERS_COLUMN_NAME), updatedPlayer.getWrongAnswers())
+                .set(DSL.field(CASH_COLUMN_NAME), updatedPlayer.getCash())
+                .set(DSL.field(CASH_WON_COLUMN_NAME), updatedPlayer.getCashWon())
+                .set(DSL.field(HIGHEST_CASH_WON_COLUMN_NAME), updatedPlayer.getHighestCashWon())
+                .set(DSL.field(LIFELINE_FIFTY_FIFTY_USED_COLUMN_NAME), updatedPlayer.getLifelineFiftyFiftyUsed())
+                .set(DSL.field(LIFELINE_PHONE_A_FRIEND_USED_COLUMN_NAME), updatedPlayer.getLifelinePhoneAFriendUsed())
+                .set(DSL.field(LIFELINE_ASK_THE_AUDIENCE_USED_COLUMN_NAME), updatedPlayer.getLifelineAskTheAudienceUsed())
+                .set(DSL.field(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME), updatedPlayer.getLifelineDoubleDipUsed())
+                .set(DSL.field(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME), updatedPlayer.getLifelineSwitchTheQuestionUsed())
+                .where(DSL.field(UUID_COLUMN_NAME).eq(updatedPlayer.getUuid().toString()))
+                .executeAsync();
     }
 }

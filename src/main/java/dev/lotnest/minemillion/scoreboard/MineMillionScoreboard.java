@@ -1,7 +1,8 @@
 package dev.lotnest.minemillion.scoreboard;
 
+import dev.lotnest.minemillion.util.ColorConstants;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -19,24 +20,24 @@ import static java.util.Objects.requireNonNull;
 
 public class MineMillionScoreboard {
 
-    private static final String DEFAULT_TITLE = ChatColor.GOLD.toString() + ChatColor.BOLD + "MineMillion";
+    private static final String DEFAULT_TITLE = ColorConstants.GOLD_STRING + ChatColor.BOLD + "MineMillion";
 
     private final Player player;
     private final Scoreboard scoreboard;
     private final Objective objective;
 
-    public MineMillionScoreboard(Player player) {
+    public MineMillionScoreboard(@NotNull Player player) {
         this(player, DEFAULT_TITLE);
     }
 
-    public MineMillionScoreboard(Player player, String title) {
+    public MineMillionScoreboard(@NotNull Player player, @NotNull String title) {
         this.player = player;
         scoreboard = requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
         objective = scoreboard.registerNewObjective("MM-" + UUID.randomUUID(), Criteria.DUMMY, title);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
 
-    public void addEntry(String text) {
+    public void addEntry(@NotNull String text) {
         addEntry(text, "");
     }
 
@@ -47,8 +48,11 @@ public class MineMillionScoreboard {
         if (team == null) {
             team = scoreboard.registerNewTeam(text);
         }
-        team.addEntry(text);
-        team.setDisplayName(text);
+
+        String randomEmptyEntry = createRandomEmptyEntry();
+
+        team.addEntry(randomEmptyEntry);
+        team.setPrefix(text);
 
         int scoreToSet = 16 - scoreboard.getEntries().size();
         for (String entry : scoreboard.getEntries()) {
@@ -58,11 +62,11 @@ public class MineMillionScoreboard {
             }
         }
 
-        Score entryScore = objective.getScore(text);
+        Score entryScore = objective.getScore(randomEmptyEntry);
         entryScore.setScore(scoreToSet);
     }
 
-    public void addEmptyEntry() {
+    private String createRandomEmptyEntry() {
         StringBuilder emptyEntryBuilder = new StringBuilder();
         ChatColor[] chatColors = ChatColor.values();
 
@@ -78,7 +82,11 @@ public class MineMillionScoreboard {
             emptyEntry = emptyEntryBuilder.toString();
         }
 
-        addEntry(emptyEntry);
+        return emptyEntry;
+    }
+
+    public void addEmptyEntry() {
+        addEntry(createRandomEmptyEntry());
     }
 
     public void clearEntries() {

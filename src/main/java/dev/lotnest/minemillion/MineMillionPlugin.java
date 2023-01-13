@@ -42,6 +42,9 @@ public class MineMillionPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        System.setProperty("org.jooq.no-logo", "true");
+        System.setProperty("org.jooq.no-tips", "true");
+
         configHandler = new ConfigHandler(this);
         languageProvider = new LanguageProvider(this, configHandler.getLanguage());
 
@@ -53,5 +56,10 @@ public class MineMillionPlugin extends JavaPlugin {
 
         taskManager = new TaskManager(this);
         eventManager = new EventManager(this);
+    }
+
+    @Override
+    public void onDisable() {
+        connectionHolder.disconnect();
     }
 }

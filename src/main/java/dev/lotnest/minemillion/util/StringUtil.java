@@ -1,5 +1,6 @@
 package dev.lotnest.minemillion.util;
 
+import dev.lotnest.minemillion.MineMillionPlugin;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +57,8 @@ public class StringUtil {
     }
 
     public static @NotNull String getCompactedCash(long cash) {
-        return NumberFormat.getCompactNumberInstance().format(cash) + " USD";
+        return NumberFormat.getCompactNumberInstance().format(cash) + " " +
+                MineMillionPlugin.getInstance().getLanguageProvider().get("currency.code");
     }
 
     public static @NotNull String getSeperatedCash(long cash) {
@@ -64,6 +66,7 @@ public class StringUtil {
                 .format(cash)
                 .replace("$", "")
                 .replace(".00", "")
-                + " USD";
+                + " "
+                + MineMillionPlugin.getInstance().getLanguageProvider().get("currency.code");
     }
 }

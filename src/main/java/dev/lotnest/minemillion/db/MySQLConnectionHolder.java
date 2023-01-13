@@ -43,7 +43,6 @@ public class MySQLConnectionHolder implements BaseDAO {
             hikariDataSource = new HikariDataSource(hikariConfig);
 
             dslContext = DSL.using(hikariDataSource, SQLDialect.MYSQL);
-            dslContext.createDatabaseIfNotExists("minemillion").execute();
 
             LoggerUtil.info("database.connected");
         } catch (Exception exception) {

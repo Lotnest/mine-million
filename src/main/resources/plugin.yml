@@ -6,6 +6,7 @@ authors: [ Lotnest ]
 libraries:
   - org.projectlombok:lombok:1.18.24
   - org.apache.commons:commons-lang3:3.12.0
-  - com.google.code.gson:gson:2.10
+  - com.google.code.gson:gson:2.10.1
   - com.zaxxer:HikariCP:5.0.1
   - org.jooq:jooq:3.17.6
+  - org.jetbrains:annotations:24.0.0

@@ -28,9 +28,14 @@ class MineMillionPluginTest {
         testee.onEnable();
 
         // THEN
+        assertThat(System.getProperty("org.jooq.no-logo")).isEqualTo("true");
+        assertThat(System.getProperty("org.jooq.no-tips")).isEqualTo("true");
+        assertThat(testee.isEnabled()).isTrue();
         assertThat(MineMillionPlugin.getInstance()).isNotNull();
         assertThat(testee.getConfigHandler()).isNotNull();
         assertThat(testee.getLanguageProvider()).isNotNull();
+        assertThat(testee.getConnectionHolder()).isNotNull();
+        assertThat(testee.getPlayerCache()).isNotNull();
         assertThat(testee.getComponentRegistry()).isNotNull();
         assertThat(testee.getTaskManager()).isNotNull();
         assertThat(testee.getEventManager()).isNotNull();

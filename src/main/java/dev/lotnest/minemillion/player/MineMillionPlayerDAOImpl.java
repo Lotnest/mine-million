@@ -71,7 +71,7 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
     }
 
     @Override
-    public void create(@NotNull MineMillionPlayer player) {
+    public void create(@NotNull MineMillionPlayer mineMillionPlayer) {
         getConnectionHolder().getDSLContext()
                 .insertInto(DSL.table(PLAYER_TABLE_NAME))
                 .columns(
@@ -92,29 +92,47 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
                         DSL.field(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME),
                         DSL.field(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME)
                 )
+                .values(
+                        mineMillionPlayer.getUuid().toString(),
+                        mineMillionPlayer.getFirstPlayedMillis(),
+                        mineMillionPlayer.getLastPlayedMillis(),
+                        mineMillionPlayer.getGamesPlayed(),
+                        mineMillionPlayer.getGamesWon(),
+                        mineMillionPlayer.getGamesLost(),
+                        mineMillionPlayer.getCorrectAnswers(),
+                        mineMillionPlayer.getWrongAnswers(),
+                        mineMillionPlayer.getCash(),
+                        mineMillionPlayer.getCashWon(),
+                        mineMillionPlayer.getHighestCashWon(),
+                        mineMillionPlayer.getLifelineFiftyFiftyUsed(),
+                        mineMillionPlayer.getLifelinePhoneAFriendUsed(),
+                        mineMillionPlayer.getLifelineAskTheAudienceUsed(),
+                        mineMillionPlayer.getLifelineDoubleDipUsed(),
+                        mineMillionPlayer.getLifelineSwitchTheQuestionUsed()
+                )
                 .executeAsync();
     }
 
     @Override
-    public void update(@NotNull MineMillionPlayer updatedPlayer) {
+    public void update(@NotNull MineMillionPlayer updatedMineMillionPlayer) {
         getConnectionHolder().getDSLContext()
                 .update(DSL.table(PLAYER_TABLE_NAME))
-                .set(DSL.field(FIRST_PLAYED_MILLIS_COLUMN_NAME), updatedPlayer.getFirstPlayedMillis())
-                .set(DSL.field(LAST_PLAYED_MILLIS_COLUMN_NAME), updatedPlayer.getLastPlayedMillis())
-                .set(DSL.field(GAMES_PLAYED_COLUMN_NAME), updatedPlayer.getGamesPlayed())
-                .set(DSL.field(GAMES_WON_COLUMN_NAME), updatedPlayer.getGamesWon())
-                .set(DSL.field(GAMES_LOST_COLUMN_NAME), updatedPlayer.getGamesLost())
-                .set(DSL.field(CORRECT_ANSWERS_COLUMN_NAME), updatedPlayer.getCorrectAnswers())
-                .set(DSL.field(WRONG_ANSWERS_COLUMN_NAME), updatedPlayer.getWrongAnswers())
-                .set(DSL.field(CASH_COLUMN_NAME), updatedPlayer.getCash())
-                .set(DSL.field(CASH_WON_COLUMN_NAME), updatedPlayer.getCashWon())
-                .set(DSL.field(HIGHEST_CASH_WON_COLUMN_NAME), updatedPlayer.getHighestCashWon())
-                .set(DSL.field(LIFELINE_FIFTY_FIFTY_USED_COLUMN_NAME), updatedPlayer.getLifelineFiftyFiftyUsed())
-                .set(DSL.field(LIFELINE_PHONE_A_FRIEND_USED_COLUMN_NAME), updatedPlayer.getLifelinePhoneAFriendUsed())
-                .set(DSL.field(LIFELINE_ASK_THE_AUDIENCE_USED_COLUMN_NAME), updatedPlayer.getLifelineAskTheAudienceUsed())
-                .set(DSL.field(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME), updatedPlayer.getLifelineDoubleDipUsed())
-                .set(DSL.field(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME), updatedPlayer.getLifelineSwitchTheQuestionUsed())
-                .where(DSL.field(UUID_COLUMN_NAME).eq(updatedPlayer.getUuid().toString()))
+                .set(DSL.field(FIRST_PLAYED_MILLIS_COLUMN_NAME), updatedMineMillionPlayer.getFirstPlayedMillis())
+                .set(DSL.field(LAST_PLAYED_MILLIS_COLUMN_NAME), updatedMineMillionPlayer.getLastPlayedMillis())
+                .set(DSL.field(GAMES_PLAYED_COLUMN_NAME), updatedMineMillionPlayer.getGamesPlayed())
+                .set(DSL.field(GAMES_WON_COLUMN_NAME), updatedMineMillionPlayer.getGamesWon())
+                .set(DSL.field(GAMES_LOST_COLUMN_NAME), updatedMineMillionPlayer.getGamesLost())
+                .set(DSL.field(CORRECT_ANSWERS_COLUMN_NAME), updatedMineMillionPlayer.getCorrectAnswers())
+                .set(DSL.field(WRONG_ANSWERS_COLUMN_NAME), updatedMineMillionPlayer.getWrongAnswers())
+                .set(DSL.field(CASH_COLUMN_NAME), updatedMineMillionPlayer.getCash())
+                .set(DSL.field(CASH_WON_COLUMN_NAME), updatedMineMillionPlayer.getCashWon())
+                .set(DSL.field(HIGHEST_CASH_WON_COLUMN_NAME), updatedMineMillionPlayer.getHighestCashWon())
+                .set(DSL.field(LIFELINE_FIFTY_FIFTY_USED_COLUMN_NAME), updatedMineMillionPlayer.getLifelineFiftyFiftyUsed())
+                .set(DSL.field(LIFELINE_PHONE_A_FRIEND_USED_COLUMN_NAME), updatedMineMillionPlayer.getLifelinePhoneAFriendUsed())
+                .set(DSL.field(LIFELINE_ASK_THE_AUDIENCE_USED_COLUMN_NAME), updatedMineMillionPlayer.getLifelineAskTheAudienceUsed())
+                .set(DSL.field(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME), updatedMineMillionPlayer.getLifelineDoubleDipUsed())
+                .set(DSL.field(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME), updatedMineMillionPlayer.getLifelineSwitchTheQuestionUsed())
+                .where(DSL.field(UUID_COLUMN_NAME).eq(updatedMineMillionPlayer.getUuid().toString()))
                 .executeAsync();
     }
 }

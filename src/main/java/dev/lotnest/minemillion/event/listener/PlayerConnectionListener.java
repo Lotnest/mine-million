@@ -15,7 +15,6 @@ public class PlayerConnectionListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onJoin(@NotNull PlayerJoinEvent event) {
-        plugin.getPlayerCache()
-                .getOrCreate(event.getPlayer().getUniqueId());
+        plugin.getPlayerCache().getOrCreate(event.getPlayer().getUniqueId());
     }
 }

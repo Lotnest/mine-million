@@ -35,7 +35,7 @@ public interface MineMillionPlayerDAO extends BaseDAO {
         return get(player.getUniqueId());
     }
 
-    void create(@NotNull MineMillionPlayer player);
+    void create(@NotNull MineMillionPlayer mineMillionPlayer);
 
-    void update(@NotNull MineMillionPlayer updatedPlayer);
+    void update(@NotNull MineMillionPlayer updatedMineMillionPlayer);
 }

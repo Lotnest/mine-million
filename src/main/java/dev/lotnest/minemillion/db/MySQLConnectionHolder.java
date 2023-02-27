@@ -14,7 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @RequiredArgsConstructor
-public class MySQLConnectionHolder implements BaseDAO {
+public class MySQLConnectionHolder {
 
     private final MineMillionPlugin plugin;
     private HikariDataSource hikariDataSource;

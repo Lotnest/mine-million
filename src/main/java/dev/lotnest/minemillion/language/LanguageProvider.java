@@ -55,4 +55,11 @@ public class LanguageProvider {
 
         return message;
     }
+
+    public void setLanguage(@NotNull Language language) {
+        this.language = language;
+        loadLanguageMapFromCurrentLanguageFile();
+        plugin.reloadCommandReplacements();
+
+    }
 }

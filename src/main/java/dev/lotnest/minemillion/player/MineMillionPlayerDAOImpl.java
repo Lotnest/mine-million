@@ -2,7 +2,6 @@ package dev.lotnest.minemillion.player;
 
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
-import org.jooq.Record;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 
@@ -38,35 +37,10 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
     @Override
     public @NotNull CompletableFuture<Optional<MineMillionPlayer>> get(@NotNull UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
-            Record jooqRecord = getConnectionHolder().getDSLContext()
-                    .select()
-                    .from(PLAYER_TABLE_NAME)
+            DSLContext dslContext = getConnectionHolder().getDSLContext();
+            return dslContext.selectFrom(PLAYER_TABLE_NAME)
                     .where(DSL.field(UUID_COLUMN_NAME).eq(uuid.toString()))
-                    .fetchOne();
-            if (jooqRecord == null) {
-                return Optional.empty();
-            }
-
-            return Optional.of(
-                    MineMillionPlayer.builder()
-                            .uuid(UUID.fromString(jooqRecord.get(UUID_COLUMN_NAME, String.class)))
-                            .firstPlayedMillis(jooqRecord.get(FIRST_PLAYED_MILLIS_COLUMN_NAME, Long.class))
-                            .lastPlayedMillis(jooqRecord.get(LAST_PLAYED_MILLIS_COLUMN_NAME, Long.class))
-                            .gamesPlayed(jooqRecord.get(GAMES_PLAYED_COLUMN_NAME, Long.class))
-                            .gamesWon(jooqRecord.get(GAMES_WON_COLUMN_NAME, Long.class))
-                            .gamesLost(jooqRecord.get(GAMES_LOST_COLUMN_NAME, Long.class))
-                            .correctAnswers(jooqRecord.get(CORRECT_ANSWERS_COLUMN_NAME, Long.class))
-                            .wrongAnswers(jooqRecord.get(WRONG_ANSWERS_COLUMN_NAME, Long.class))
-                            .cash(jooqRecord.get(CASH_COLUMN_NAME, Long.class))
-                            .cashWon(jooqRecord.get(CASH_WON_COLUMN_NAME, Long.class))
-                            .highestCashWon(jooqRecord.get(HIGHEST_CASH_WON_COLUMN_NAME, Long.class))
-                            .lifelineFiftyFiftyUsed(jooqRecord.get(LIFELINE_FIFTY_FIFTY_USED_COLUMN_NAME, Long.class))
-                            .lifelinePhoneAFriendUsed(jooqRecord.get(LIFELINE_PHONE_A_FRIEND_USED_COLUMN_NAME, Long.class))
-                            .lifelineAskTheAudienceUsed(jooqRecord.get(LIFELINE_ASK_THE_AUDIENCE_USED_COLUMN_NAME, Long.class))
-                            .lifelineDoubleDipUsed(jooqRecord.get(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME, Long.class))
-                            .lifelineSwitchTheQuestionUsed(jooqRecord.get(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME, Long.class))
-                            .build()
-            );
+                    .fetchOptionalInto(MineMillionPlayer.class);
         });
     }
 
@@ -74,8 +48,7 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
     public void create(@NotNull MineMillionPlayer mineMillionPlayer) {
         getConnectionHolder().getDSLContext()
                 .insertInto(DSL.table(PLAYER_TABLE_NAME))
-                .columns(
-                        DSL.field(UUID_COLUMN_NAME),
+                .columns(DSL.field(UUID_COLUMN_NAME),
                         DSL.field(FIRST_PLAYED_MILLIS_COLUMN_NAME),
                         DSL.field(LAST_PLAYED_MILLIS_COLUMN_NAME),
                         DSL.field(GAMES_PLAYED_COLUMN_NAME),
@@ -92,8 +65,7 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
                         DSL.field(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME),
                         DSL.field(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME)
                 )
-                .values(
-                        mineMillionPlayer.getUuid().toString(),
+                .values(mineMillionPlayer.getUuid().toString(),
                         mineMillionPlayer.getFirstPlayedMillis(),
                         mineMillionPlayer.getLastPlayedMillis(),
                         mineMillionPlayer.getGamesPlayed(),

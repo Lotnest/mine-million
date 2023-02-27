@@ -32,11 +32,15 @@ public class ScoreboardTask extends ScheduledMineMillionTask {
             if (scoreboard == null) {
                 scoreboard = new MineMillionScoreboard(player);
                 scoreboard.addEmptyEntry();
-                scoreboard.addEntry(ColorConstants.BLUE_STRING + "Language: %s", ColorConstants.GOLD_STRING + plugin.getLanguageProvider().getLanguage().getNativeName());
+                scoreboard.addEntry(ColorConstants.BLUE_STRING + plugin.getLanguageProvider().get("scoreboard.language", ColorConstants.GOLD_STRING + plugin.getLanguageProvider().getLanguage().getNativeName()));
                 scoreboard.addEmptyEntry();
-                scoreboard.addEntry(ColorConstants.BLUE_STRING + "Cash: %s", ColorConstants.GOLD_STRING + StringUtil.getSeperatedCash(mineMillionPlayer.getCash()));
+                scoreboard.addEntry(ColorConstants.BLUE_STRING + plugin.getLanguageProvider().get("scoreboard.cash", ColorConstants.GOLD_STRING + StringUtil.getSeperatedCash(mineMillionPlayer.getCash())));
                 scoreboard.showToPlayer();
                 scoreboards.put(player.getUniqueId(), scoreboard);
+            } else {
+                scoreboard.updateEntry(15, ColorConstants.BLUE_STRING + plugin.getLanguageProvider().get("scoreboard.language", ColorConstants.GOLD_STRING + plugin.getLanguageProvider().getLanguage().getNativeName()));
+                scoreboard.updateEntry(13, ColorConstants.BLUE_STRING + plugin.getLanguageProvider().get("scoreboard.cash", ColorConstants.GOLD_STRING + StringUtil.getSeperatedCash(mineMillionPlayer.getCash())));
+                scoreboard.showToPlayer();
             }
         }
     }

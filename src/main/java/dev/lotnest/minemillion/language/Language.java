@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 @RequiredArgsConstructor
 @Getter
 public enum Language {
@@ -12,6 +15,7 @@ public enum Language {
     POLISH_PL("polish", "polski", "pl_PL");
 
     private static final Language[] VALUES = values();
+    private static final Collection<String> LANGUAGES_AS_STRINGS = Arrays.stream(VALUES).map(Language::name).toList();
 
     private final String englishName;
     private final String nativeName;
@@ -29,5 +33,9 @@ public enum Language {
         }
 
         return ENGLISH_US;
+    }
+
+    public static Collection<String> getLanguagesAsStrings() {
+        return LANGUAGES_AS_STRINGS;
     }
 }

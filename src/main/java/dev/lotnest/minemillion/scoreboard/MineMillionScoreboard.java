@@ -13,6 +13,7 @@ import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -67,23 +68,22 @@ public class MineMillionScoreboard {
     }
 
     private String createRandomEmptyEntry() {
-        StringBuilder emptyEntryBuilder = new StringBuilder();
-        ChatColor[] chatColors = ChatColor.values();
+        String emptyEntry;
+        do {
+            StringBuilder emptyEntryBuilder = new StringBuilder();
+            ChatColor[] chatColors = ChatColor.values();
 
-        for (int i = 0; i < 10; i++) {
-            ChatColor randomColor = chatColors[ThreadLocalRandom.current().nextInt(chatColors.length)];
-            emptyEntryBuilder.append(randomColor);
-        }
+            for (int i = 0; i < 10; i++) {
+                ChatColor randomColor = chatColors[ThreadLocalRandom.current().nextInt(chatColors.length)];
+                emptyEntryBuilder.append(randomColor);
+            }
 
-        String emptyEntry = emptyEntryBuilder.toString();
-
-        while (scoreboard.getEntries().contains(emptyEntry)) {
-            emptyEntryBuilder.append(" ");
             emptyEntry = emptyEntryBuilder.toString();
-        }
+        } while (scoreboard.getEntries().contains(emptyEntry));
 
         return emptyEntry;
     }
+
 
     public void addEmptyEntry() {
         addEntry(createRandomEmptyEntry());
@@ -106,6 +106,28 @@ public class MineMillionScoreboard {
     public void showToPlayer() {
         if (isPlayerOnline()) {
             player.setScoreboard(scoreboard);
+        }
+    }
+
+    public void updateEntry(int index, @NotNull String newText, @Nullable Object... placeholders) {
+        newText = String.format(newText, placeholders);
+        Team entryTeam = scoreboard.getEntryTeam(scoreboard.getEntries().toArray(new String[0])[16 - index]);
+        String oldText = entryTeam != null ? entryTeam.getPrefix() : null;
+
+        if (Objects.equals(oldText, newText)) {
+            return;
+        }
+
+        if (entryTeam != null) {
+            entryTeam.setPrefix(newText);
+            return;
+        }
+
+        Team newTeam = scoreboard.getTeam(newText);
+        if (newTeam == null) {
+            addEntry(newText);
+        } else {
+            newTeam.setPrefix(newText);
         }
     }
 }

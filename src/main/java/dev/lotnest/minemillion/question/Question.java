@@ -1,18 +1,26 @@
 package dev.lotnest.minemillion.question;
 
+import dev.lotnest.minemillion.util.ColorConstants;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-@Getter
-@Setter
 public class Question {
 
     private long id;
@@ -29,6 +37,14 @@ public class Question {
     private LocalDateTime lastAskedAt;
     private LocalDateTime lastAnsweredCorrectlyAt;
     private LocalDateTime lastAnsweredWrongAt;
+
+    public @NotNull List<String> getAnswers() {
+        List<String> options = Arrays.asList(answer, wrongAnswer1, wrongAnswer2, wrongAnswer3);
+        Collections.shuffle(options);
+        return IntStream.range(0, options.size())
+                .mapToObj(i -> ColorConstants.GOLD + new String[]{"A: ", "B: ", "C: ", "D: "}[i] + ColorConstants.BLUE + options.get(i))
+                .toList();
+    }
 
     public enum Category {
 

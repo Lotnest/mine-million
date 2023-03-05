@@ -6,11 +6,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Level;
 
-public class LoggerUtil {
+public class LogUtil {
 
     private static final MineMillionPlugin PLUGIN = MineMillionPlugin.getInstance();
 
-    private LoggerUtil() {
+    private LogUtil() {
     }
 
     public static void infoMessage(@NotNull String message) {

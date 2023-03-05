@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import dev.lotnest.minemillion.MineMillionPlugin;
 import dev.lotnest.minemillion.file.ConfigHandler;
-import dev.lotnest.minemillion.util.LoggerUtil;
+import dev.lotnest.minemillion.util.LogUtil;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -22,7 +22,7 @@ public class MySQLConnectionHolder {
 
     public void connect() {
         try {
-            LoggerUtil.info("database.connecting");
+            LogUtil.info("database.connecting");
 
             HikariConfig hikariConfig = new HikariConfig();
             ConfigHandler configHandler = plugin.getConfigHandler();
@@ -44,9 +44,9 @@ public class MySQLConnectionHolder {
 
             dslContext = DSL.using(hikariDataSource, SQLDialect.MYSQL);
 
-            LoggerUtil.info("database.connected");
+            LogUtil.info("database.connected");
         } catch (Exception exception) {
-            LoggerUtil.severe("database.connectionFailed", exception);
+            LogUtil.severe("database.connectionFailed", exception);
             plugin.getPluginLoader().disablePlugin(plugin);
         }
     }
@@ -65,7 +65,7 @@ public class MySQLConnectionHolder {
         try {
             return hikariDataSource.getConnection();
         } catch (SQLException exception) {
-            LoggerUtil.severe("database.connectionFailed", exception);
+            LogUtil.severe("database.connectionFailed", exception);
             return null;
         }
     }

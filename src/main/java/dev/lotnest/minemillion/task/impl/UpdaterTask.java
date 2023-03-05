@@ -2,7 +2,7 @@ package dev.lotnest.minemillion.task.impl;
 
 import dev.lotnest.minemillion.MineMillionPlugin;
 import dev.lotnest.minemillion.task.ScheduledMineMillionTask;
-import dev.lotnest.minemillion.util.LoggerUtil;
+import dev.lotnest.minemillion.util.LogUtil;
 import dev.lotnest.minemillion.util.VersionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -34,28 +34,28 @@ public class UpdaterTask extends ScheduledMineMillionTask {
         try {
             String latestVersion = checkForUpdate().get(20L, TimeUnit.SECONDS);
             if (StringUtils.isBlank(latestVersion)) {
-                LoggerUtil.warning("general.updateFailed");
+                LogUtil.warning("general.updateFailed");
                 return;
             }
 
             if (VersionUtil.isTheSameVersion(latestVersion)) {
-                LoggerUtil.info("general.updateNotAvailable");
+                LogUtil.info("general.updateNotAvailable");
                 return;
             }
 
             if (VersionUtil.isNewerVersion(latestVersion)) {
-                LoggerUtil.info("general.updateAvailable", latestVersion,
+                LogUtil.info("general.updateAvailable", latestVersion,
                         SPIGOT_RESOURCES_ENDPOINT + SPIGOT_RESOURCE_ID);
             }
         } catch (ExecutionException | TimeoutException exception) {
-            LoggerUtil.warning("general.updateFailed", exception);
+            LogUtil.warning("general.updateFailed", exception);
         } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
         }
     }
 
     private CompletableFuture<String> checkForUpdate() {
-        LoggerUtil.info("general.checkingForUpdates");
+        LogUtil.info("general.checkingForUpdates");
 
         String url = String.format(SPIGOT_API_ENDPOINT, SPIGOT_RESOURCE_ID, VersionUtil.getVersion());
 

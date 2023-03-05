@@ -3,7 +3,7 @@ package dev.lotnest.minemillion.component.impl;
 import dev.lotnest.minemillion.MineMillionPlugin;
 import dev.lotnest.minemillion.component.Component;
 import dev.lotnest.minemillion.component.ComponentResult;
-import dev.lotnest.minemillion.util.LoggerUtil;
+import dev.lotnest.minemillion.util.LogUtil;
 import dev.lotnest.minemillion.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,8 +33,8 @@ public class BootstrapComponent extends Component {
             return ComponentResult.ALREADY_INITIALIZED;
         }
 
-        LoggerUtil.infoMessage(BOOT_FIGLET_MESSAGE);
-        LoggerUtil.info("general.pluginInfo", plugin.getDescription().getVersion(),
+        LogUtil.infoMessage(BOOT_FIGLET_MESSAGE);
+        LogUtil.info("general.pluginInfo", plugin.getDescription().getVersion(),
                 StringUtil.join(plugin.getDescription().getAuthors()));
 
         isInitialized = true;

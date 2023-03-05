@@ -1,15 +1,17 @@
 package dev.lotnest.minemillion.player;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
 @Builder
-@Getter
-@Setter
 public class MineMillionPlayer {
 
     private final @NotNull UUID uuid;

@@ -3,6 +3,7 @@ version: '${project.version}'
 main: dev.lotnest.minemillion.MineMillionPlugin
 api-version: 1.19
 authors: [ Lotnest ]
+website: https://discord.gg/6vrHK87
 libraries:
   - org.projectlombok:lombok:1.18.24
   - org.apache.commons:commons-lang3:3.12.0

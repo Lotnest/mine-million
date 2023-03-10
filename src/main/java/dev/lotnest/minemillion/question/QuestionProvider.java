@@ -10,16 +10,29 @@ import java.util.Set;
 
 public class QuestionProvider {
 
-    private final Set<Question> questions;
     private final QuestionDAO questionDAO;
+
+    private final Set<Question> questions;
+    private final Set<Question> askedQuestions;
 
     public QuestionProvider() {
         questionDAO = new QuestionDAOImpl();
         questions = Sets.newHashSet(questionDAO.getAll());
+        askedQuestions = Sets.newHashSet();
     }
 
     public @NotNull Optional<Question> getQuestion() {
-        return questions.stream().findAny();
+        if (askedQuestions.size() == questions.size()) {
+            askedQuestions.clear();
+        }
+
+        return questions.stream()
+                .filter(question -> !askedQuestions.contains(question))
+                .findAny()
+                .map(question -> {
+                    askedQuestions.add(question);
+                    return question;
+                });
     }
 
     public @NotNull ImmutableList<Question> getQuestions() {

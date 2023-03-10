@@ -3,25 +3,27 @@ package dev.lotnest.minemillion.language;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
 public enum Language {
 
-    ENGLISH_US("english (US)", "english (US)", "en_US"),
-    POLISH_PL("polish", "polski", "pl_PL");
+    ENGLISH_US("English (US)", "English (US)", "en_US"),
+    POLISH_PL("Polish", "polski", "pl_PL");
 
     private static final Language[] VALUES = values();
-    private static final Collection<String> LANGUAGES_AS_STRINGS = Arrays.stream(VALUES).map(Language::name).toList();
+    private static final List<String> LANGUAGES_AS_STRINGS = Arrays.stream(VALUES).map(Language::name).toList();
 
     private final String englishName;
     private final String nativeName;
     private final String code;
 
-    public static Language fromCode(String code) {
+    public static @NotNull Language fromCode(@Nullable String code) {
         if (StringUtils.isBlank(code)) {
             return ENGLISH_US;
         }
@@ -35,7 +37,7 @@ public enum Language {
         return ENGLISH_US;
     }
 
-    public static Collection<String> getLanguagesAsStrings() {
+    public static @NotNull List<String> getLanguagesAsStrings() {
         return LANGUAGES_AS_STRINGS;
     }
 }

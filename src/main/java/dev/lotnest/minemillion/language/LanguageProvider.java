@@ -2,6 +2,7 @@ package dev.lotnest.minemillion.language;
 
 import com.google.common.collect.Maps;
 import dev.lotnest.minemillion.MineMillionPlugin;
+import dev.lotnest.minemillion.util.ColorConstants;
 import dev.lotnest.minemillion.util.exception.FileFailedToLoadException;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +46,7 @@ public class LanguageProvider {
             return "ERROR_NO_KEY_PROVIDED";
         }
 
-        String message = languageMap.getOrDefault(key, "ERROR_NO_MESSAGE_VALUE_FOUND: " + key);
+        String message = languageMap.getOrDefault(key, ColorConstants.RED + "ERROR_NO_MESSAGE_VALUE_FOUND: " + key);
 
         if (placeholders != null && placeholders.length > 0) {
             for (int i = 0; i < placeholders.length; i++) {
@@ -58,8 +59,8 @@ public class LanguageProvider {
 
     public void setLanguage(@NotNull Language language) {
         this.language = language;
+        plugin.getConfigHandler().setLanguage(language);
         loadLanguageMapFromCurrentLanguageFile();
         plugin.reloadCommandReplacements();
-
     }
 }

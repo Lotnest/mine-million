@@ -1,7 +1,8 @@
 package dev.lotnest.minemillion.event;
 
 import dev.lotnest.minemillion.MineMillionPlugin;
-import dev.lotnest.minemillion.event.listener.PlayerConnectionListener;
+import dev.lotnest.minemillion.event.listener.ChatListener;
+import dev.lotnest.minemillion.event.listener.ConnectionListener;
 import dev.lotnest.minemillion.gui.GUIHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -13,16 +14,16 @@ public class EventManager {
 
     public EventManager(@NotNull MineMillionPlugin plugin) {
         this.plugin = plugin;
-
         registerListeners();
     }
 
     private void registerListeners() {
-        registerListener(new PlayerConnectionListener(plugin));
+        registerListener(new ConnectionListener(plugin));
         registerListener(new GUIHandler());
+        registerListener(new ChatListener(plugin));
     }
 
-    public void registerListener(Listener listener) {
+    public void registerListener(@NotNull Listener listener) {
         Bukkit.getPluginManager().registerEvents(listener, plugin);
     }
 }

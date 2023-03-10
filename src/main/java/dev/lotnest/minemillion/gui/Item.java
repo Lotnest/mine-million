@@ -34,18 +34,18 @@ public class Item {
                 .collect(Collectors.toList());
     }
 
-    public static @NotNull Item questionToItem(@NotNull Question question) {
+    public static @NotNull Item questionToItem(@NotNull Question question, boolean showCorrectAnswer) {
         return Item.builder()
                 .itemStack(ItemStackBuilder.itemStack(ItemConstants.QUESTION_ITEM)
                         .name(ColorConstants.RED + question.getText())
-                        .lore(question.getAnswers())
+                        .lore(question.getAnswers(showCorrectAnswer))
                         .build())
                 .actionOnClick(event -> {
                     Player player = (Player) event.getWhoClicked();
                     player.closeInventory();
                     player.sendMessage(ChatColor.GREEN + "Question: " + ColorConstants.RED + question.getText());
                     player.sendMessage(ChatColor.GREEN + "Answers: ");
-                    MessageUtil.sendMessage(player, question.getAnswers());
+                    MessageUtil.sendMessage(player, question.getAnswers(showCorrectAnswer));
 
                 })
                 .build();

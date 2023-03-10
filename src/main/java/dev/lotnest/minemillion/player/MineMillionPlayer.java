@@ -1,10 +1,14 @@
 package dev.lotnest.minemillion.player;
 
+import dev.lotnest.minemillion.question.Question;
+import dev.lotnest.minemillion.util.MessageUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -31,7 +35,14 @@ public class MineMillionPlayer {
     private long lifelineDoubleDipUsed;
     private long lifelineSwitchTheQuestionUsed;
 
+    private @Nullable Question currentQuestion;
+    private @Nullable Question lastAskedQuestion;
+
     public long getLifelinesUsed() {
         return lifelineFiftyFiftyUsed + lifelinePhoneAFriendUsed + lifelineAskTheAudienceUsed + lifelineDoubleDipUsed + lifelineSwitchTheQuestionUsed;
+    }
+
+    public void sendMessage(@Nullable String message) {
+        MessageUtil.sendMessage(Bukkit.getPlayer(uuid), message);
     }
 }

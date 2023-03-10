@@ -9,11 +9,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
-public class PlayerConnectionListener implements Listener {
+public class ConnectionListener implements Listener {
 
-    private final MineMillionPlugin plugin;
+    private final @NotNull MineMillionPlugin plugin;
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(@NotNull PlayerJoinEvent event) {
         plugin.getPlayerCache().getOrCreate(event.getPlayer().getUniqueId());
     }

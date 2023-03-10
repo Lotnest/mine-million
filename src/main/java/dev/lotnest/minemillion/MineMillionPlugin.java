@@ -37,6 +37,8 @@ import java.io.File;
 @Getter
 public class MineMillionPlugin extends JavaPlugin {
 
+    private static MineMillionPlugin instance;
+
     private ConfigHandler configHandler;
     private LanguageProvider languageProvider;
     private QuestionProvider questionProvider;
@@ -56,14 +58,31 @@ public class MineMillionPlugin extends JavaPlugin {
     }
 
     public static MineMillionPlugin getInstance() {
-        return (MineMillionPlugin) Bukkit.getPluginManager().getPlugin("MineMillion");
+        if (instance == null) {
+            instance = (MineMillionPlugin) Bukkit.getPluginManager().getPlugin("MineMillion");
+        }
+        return instance;
     }
 
     @Override
     public void onEnable() {
+        disableJooqProperties();
+        registerInstances();
+        addLogFilter();
+        registerCommands();
+    }
+
+    @Override
+    public void onDisable() {
+        connectionHolder.disconnect();
+    }
+
+    private void disableJooqProperties() {
         System.setProperty("org.jooq.no-logo", "true");
         System.setProperty("org.jooq.no-tips", "true");
+    }
 
+    private void registerInstances() {
         configHandler = new ConfigHandler(this);
         languageProvider = new LanguageProvider(this, configHandler.getLanguage());
 
@@ -77,14 +96,6 @@ public class MineMillionPlugin extends JavaPlugin {
         eventManager = new EventManager(this);
         questionProvider = new QuestionProvider();
         questionManager = new QuestionManager(questionProvider);
-
-        ((Logger) LogManager.getRootLogger()).addFilter(new LogFilter());
-        registerCommands();
-    }
-
-    @Override
-    public void onDisable() {
-        connectionHolder.disconnect();
     }
 
     private void registerCommands() {
@@ -109,11 +120,15 @@ public class MineMillionPlugin extends JavaPlugin {
 
         commandManager.registerCommand(new HelpSubCommand());
         commandManager.registerCommand(new LanguageSubCommand(languageProvider));
-        commandManager.registerCommand(new QuestionSubCommand(questionManager, languageProvider));
+        commandManager.registerCommand(new QuestionSubCommand(questionManager, languageProvider, playerCache));
 
         reloadCommandReplacements();
 
         commandManager.getCommandCompletions().registerAsyncCompletion("languages", context -> Language.getLanguagesAsStrings());
+    }
+
+    private void addLogFilter() {
+        ((Logger) LogManager.getRootLogger()).addFilter(new LogFilter());
     }
 
     public void reloadCommandReplacements() {
@@ -122,6 +137,10 @@ public class MineMillionPlugin extends JavaPlugin {
 
         commandManager.getCommandReplacements().addReplacement("command.language.description", languageProvider.get("command.language.description"));
         commandManager.getCommandReplacements().addReplacement("command.language.syntax", languageProvider.get("command.language.syntax"));
+        commandManager.getCommandReplacements().addReplacement("command.language.get.description", languageProvider.get("command.language.get.description"));
+        commandManager.getCommandReplacements().addReplacement("command.language.get.syntax", languageProvider.get("command.language.get.syntax"));
+        commandManager.getCommandReplacements().addReplacement("command.language.set.description", languageProvider.get("command.language.set.description"));
+        commandManager.getCommandReplacements().addReplacement("command.language.set.syntax", languageProvider.get("command.language.set.syntax"));
 
         commandManager.getCommandReplacements().addReplacement("command.question.description", languageProvider.get("command.question.description"));
         commandManager.getCommandReplacements().addReplacement("command.question.syntax", languageProvider.get("command.question.syntax"));

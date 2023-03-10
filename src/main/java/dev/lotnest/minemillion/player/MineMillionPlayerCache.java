@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +35,8 @@ public class MineMillionPlayerCache {
                 return cachedResult;
             }
 
-            return dao.get(playerUUID).thenApply(optionalMineMillionPlayer -> {
+            return dao.get(playerUUID)
+                    .thenApply(optionalMineMillionPlayer -> {
                         MineMillionPlayer result = null;
 
                         if (optionalMineMillionPlayer.isEmpty()) {
@@ -54,6 +56,20 @@ public class MineMillionPlayerCache {
                     })
                     .join();
         });
+    }
+
+    public @NotNull CompletableFuture<Optional<MineMillionPlayer>> get(@NotNull Player player) {
+        return get(player.getUniqueId());
+    }
+
+    public @NotNull CompletableFuture<Optional<MineMillionPlayer>> get(@NotNull UUID playerUUID) {
+        MineMillionPlayer cachedResult = cache.getIfPresent(playerUUID);
+
+        if (cachedResult != null) {
+            return CompletableFuture.completedFuture(Optional.of(cachedResult));
+        }
+
+        return dao.get(playerUUID);
     }
 
     public void invalidate(@NotNull UUID uuid) {

@@ -39,7 +39,7 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
         return CompletableFuture.supplyAsync(() -> {
             DSLContext dslContext = getConnectionHolder().getDSLContext();
             return dslContext.selectFrom(PLAYER_TABLE_NAME)
-                    .where(DSL.field(UUID_COLUMN_NAME).eq(uuid.toString()))
+                    .where(DSL.field(UUID_COLUMN_NAME).eq(uuid))
                     .fetchOptionalInto(MineMillionPlayer.class);
         });
     }
@@ -65,7 +65,7 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
                         DSL.field(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME),
                         DSL.field(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME)
                 )
-                .values(mineMillionPlayer.getUuid().toString(),
+                .values(mineMillionPlayer.getUuid(),
                         mineMillionPlayer.getFirstPlayedMillis(),
                         mineMillionPlayer.getLastPlayedMillis(),
                         mineMillionPlayer.getGamesPlayed(),

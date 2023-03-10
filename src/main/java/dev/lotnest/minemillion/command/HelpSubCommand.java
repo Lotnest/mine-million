@@ -3,6 +3,7 @@ package dev.lotnest.minemillion.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
@@ -16,6 +17,7 @@ public class HelpSubCommand extends BaseCommand {
     @HelpCommand
     @Description("%command.help.description")
     @Syntax("%command.help.syntax")
+    @CommandPermission("minemillion.help")
     public void handleCommand(@NotNull CommandHelp help) {
         help.showHelp();
     }

@@ -13,6 +13,12 @@ public class ColorConstants {
     public static final ChatColor RED = ChatColor.of("#D43737");
     public static final String RED_STRING = RED.toString();
 
+    public static final ChatColor GREEN = ChatColor.of("#37D437");
+    public static final String GREEN_STRING = GREEN.toString();
+
+    public static final ChatColor YELLOW = ChatColor.of("#FFFF00");
+    public static final String YELLOW_STRING = YELLOW.toString();
+
     private ColorConstants() {
     }
 }

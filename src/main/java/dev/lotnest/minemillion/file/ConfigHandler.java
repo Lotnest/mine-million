@@ -3,6 +3,7 @@ package dev.lotnest.minemillion.file;
 import dev.lotnest.minemillion.MineMillionPlugin;
 import dev.lotnest.minemillion.language.Language;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,5 +53,20 @@ public class ConfigHandler {
 
     public String getMySQLPassword() {
         return yaml.getString("mysql.password", "");
+    }
+
+    public void setLanguage(@NotNull Language language) {
+        yaml.set("language", language.getCode());
+        save();
+    }
+
+    @SneakyThrows
+    public void reload() {
+        yaml.load(file);
+    }
+
+    @SneakyThrows
+    public void save() {
+        yaml.save(file);
     }
 }

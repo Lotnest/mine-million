@@ -1,7 +1,10 @@
 package dev.lotnest.minemillion.player;
 
+import dev.lotnest.minemillion.util.LogUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 
@@ -104,7 +107,7 @@ public class MineMillionPlayerDAOImpl implements MineMillionPlayerDAO {
                 .set(DSL.field(LIFELINE_ASK_THE_AUDIENCE_USED_COLUMN_NAME), updatedMineMillionPlayer.getLifelineAskTheAudienceUsed())
                 .set(DSL.field(LIFELINE_DOUBLE_DIP_USED_COLUMN_NAME), updatedMineMillionPlayer.getLifelineDoubleDipUsed())
                 .set(DSL.field(LIFELINE_SWITCH_THE_QUESTION_USED_COLUMN_NAME), updatedMineMillionPlayer.getLifelineSwitchTheQuestionUsed())
-                .where(DSL.field(UUID_COLUMN_NAME).eq(updatedMineMillionPlayer.getUuid().toString()))
+                .where(DSL.field(UUID_COLUMN_NAME).eq(updatedMineMillionPlayer.getUuid()))
                 .executeAsync();
     }
 }

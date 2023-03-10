@@ -1,5 +1,7 @@
 package dev.lotnest.minemillion.gui;
 
+import dev.lotnest.minemillion.MineMillionPlugin;
+import dev.lotnest.minemillion.language.LanguageProvider;
 import dev.lotnest.minemillion.question.Question;
 import dev.lotnest.minemillion.util.ColorConstants;
 import dev.lotnest.minemillion.util.ItemConstants;
@@ -42,11 +44,12 @@ public class Item {
                         .build())
                 .actionOnClick(event -> {
                     Player player = (Player) event.getWhoClicked();
-                    player.closeInventory();
-                    player.sendMessage(ChatColor.GREEN + "Question: " + ColorConstants.RED + question.getText());
-                    player.sendMessage(ChatColor.GREEN + "Answers: ");
-                    MessageUtil.sendMessage(player, question.getAnswers(showCorrectAnswer));
+                    LanguageProvider languageProvider = MineMillionPlugin.getInstance().getLanguageProvider();
 
+                    player.closeInventory();
+                    player.sendMessage(ColorConstants.GREEN + languageProvider.get("question.text") + ": " + ColorConstants.RED + question.getText());
+                    player.sendMessage(ColorConstants.GREEN + languageProvider.get("question.answers") + ":");
+                    MessageUtil.sendMessage(player, question.getAnswers(showCorrectAnswer));
                 })
                 .build();
     }

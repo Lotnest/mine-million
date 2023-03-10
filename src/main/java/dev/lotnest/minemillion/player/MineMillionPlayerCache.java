@@ -42,6 +42,7 @@ public class MineMillionPlayerCache {
                         if (optionalMineMillionPlayer.isEmpty()) {
                             result = MineMillionPlayer.builder()
                                     .uuid(playerUUID)
+                                    .firstPlayedMillis(System.currentTimeMillis())
                                     .build();
 
                             dao.create(result);

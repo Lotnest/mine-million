@@ -17,7 +17,7 @@ public class ChatListener implements Listener {
     private final @NotNull MineMillionPlugin plugin;
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onChat(@NotNull AsyncPlayerChatEvent event) {
+    public void onTestQuestionChat(@NotNull AsyncPlayerChatEvent event) {
         plugin.getPlayerCache()
                 .get(event.getPlayer().getUniqueId())
                 .join()
@@ -34,13 +34,15 @@ public class ChatListener implements Listener {
 
                         String matchingAnswerFromLetter = currentQuestion.getAnswerFromLetter(playerAnswer).orElse(StringUtils.EMPTY);
                         if (currentQuestion.getAnswer().equalsIgnoreCase(matchingAnswerFromLetter)) {
-                            mineMillionPlayer.sendMessage(ColorConstants.GREEN + "Correct answer!");
+                            mineMillionPlayer.sendMessage(ColorConstants.GREEN + plugin.getLanguageProvider().get("question.correctAnswer") + "!");
                         } else {
-                            mineMillionPlayer.sendMessage(ColorConstants.RED + "Wrong answer!");
+                            mineMillionPlayer.sendMessage(ColorConstants.RED + plugin.getLanguageProvider().get("question.incorrectAnswer") + "! " +
+                                     plugin.getLanguageProvider().get("question.incorrectAnswer.correctAnswer", currentQuestion.getAnswerWithOption()));
                         }
 
                         mineMillionPlayer.setLastAskedQuestion(mineMillionPlayer.getCurrentQuestion());
                         mineMillionPlayer.setCurrentQuestion(null);
+                        plugin.getPlayerCache().update(mineMillionPlayer);
                     }
                 });
     }

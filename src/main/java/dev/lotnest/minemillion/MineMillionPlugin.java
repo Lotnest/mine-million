@@ -4,6 +4,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandHelpFormatter;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandManager;
+import dev.lotnest.minemillion.command.CommandRegistry;
 import dev.lotnest.minemillion.command.HelpSubCommand;
 import dev.lotnest.minemillion.command.LanguageSubCommand;
 import dev.lotnest.minemillion.command.QuestionSubCommand;
@@ -47,10 +48,10 @@ public class MineMillionPlugin extends JavaPlugin {
     private MineMillionPlayerCache playerCache;
 
     private ComponentRegistry componentRegistry;
+    private CommandRegistry commandRegistry;
 
     private TaskManager taskManager;
     private EventManager eventManager;
-    private PaperCommandManager commandManager;
     private QuestionManager questionManager;
 
     protected MineMillionPlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
@@ -66,10 +67,9 @@ public class MineMillionPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        addLogFilter();
         disableJooqProperties();
         registerInstances();
-        addLogFilter();
-        registerCommands();
     }
 
     @Override
@@ -96,63 +96,11 @@ public class MineMillionPlugin extends JavaPlugin {
         eventManager = new EventManager(this);
         questionProvider = new QuestionProvider();
         questionManager = new QuestionManager(questionProvider);
-    }
 
-    private void registerCommands() {
-        commandManager = new PaperCommandManager(this);
-
-        commandManager.enableUnstableAPI("brigadier");
-        commandManager.enableUnstableAPI("help");
-
-        commandManager.setHelpFormatter(new CommandHelpFormatter(commandManager) {
-            @Override
-            public void printHelpHeader(CommandHelp help, CommandIssuer issuer) {
-                issuer.sendMessage(StringUtils.EMPTY);
-                issuer.sendMessage(ColorConstants.BLUE_STRING + "=== " + ColorConstants.GOLD_STRING + languageProvider.get("general.help") + ColorConstants.BLUE_STRING + " ===");
-                issuer.sendMessage(StringUtils.EMPTY);
-            }
-        });
-
-        commandManager.setDefaultExceptionHandler((command, registeredCommand, sender, args, throwable) -> {
-            sender.sendMessage(ChatColor.RED + languageProvider.get("error.command"));
-            return true;
-        });
-
-        commandManager.registerCommand(new HelpSubCommand());
-        commandManager.registerCommand(new LanguageSubCommand(languageProvider));
-        commandManager.registerCommand(new QuestionSubCommand(questionManager, languageProvider, playerCache));
-
-        reloadCommandReplacements();
-
-        commandManager.getCommandCompletions().registerAsyncCompletion("languages", context -> Language.getLanguagesAsStrings());
+        commandRegistry = new CommandRegistry(this);
     }
 
     private void addLogFilter() {
         ((Logger) LogManager.getRootLogger()).addFilter(new LogFilter());
-    }
-
-    public void reloadCommandReplacements() {
-        commandManager.getCommandReplacements().addReplacement("command.help.description", languageProvider.get("command.help.description"));
-        commandManager.getCommandReplacements().addReplacement("command.help.syntax", languageProvider.get("command.help.syntax"));
-
-        commandManager.getCommandReplacements().addReplacement("command.language.description", languageProvider.get("command.language.description"));
-        commandManager.getCommandReplacements().addReplacement("command.language.syntax", languageProvider.get("command.language.syntax"));
-        commandManager.getCommandReplacements().addReplacement("command.language.get.description", languageProvider.get("command.language.get.description"));
-        commandManager.getCommandReplacements().addReplacement("command.language.get.syntax", languageProvider.get("command.language.get.syntax"));
-        commandManager.getCommandReplacements().addReplacement("command.language.set.description", languageProvider.get("command.language.set.description"));
-        commandManager.getCommandReplacements().addReplacement("command.language.set.syntax", languageProvider.get("command.language.set.syntax"));
-
-        commandManager.getCommandReplacements().addReplacement("command.question.description", languageProvider.get("command.question.description"));
-        commandManager.getCommandReplacements().addReplacement("command.question.syntax", languageProvider.get("command.question.syntax"));
-        commandManager.getCommandReplacements().addReplacement("command.question.add.description", languageProvider.get("command.question.add.description"));
-        commandManager.getCommandReplacements().addReplacement("command.question.add.syntax", languageProvider.get("command.question.add.syntax"));
-        commandManager.getCommandReplacements().addReplacement("command.question.remove.description", languageProvider.get("command.question.remove.description"));
-        commandManager.getCommandReplacements().addReplacement("command.question.remove.syntax", languageProvider.get("command.question.remove.syntax"));
-        commandManager.getCommandReplacements().addReplacement("command.question.edit.description", languageProvider.get("command.question.edit.description"));
-        commandManager.getCommandReplacements().addReplacement("command.question.edit.syntax", languageProvider.get("command.question.edit.syntax"));
-        commandManager.getCommandReplacements().addReplacement("command.question.list.description", languageProvider.get("command.question.list.description"));
-        commandManager.getCommandReplacements().addReplacement("command.question.list.syntax", languageProvider.get("command.question.list.syntax"));
-        commandManager.getCommandReplacements().addReplacement("command.question.reload.description", languageProvider.get("command.question.reload.description"));
-        commandManager.getCommandReplacements().addReplacement("command.question.reload.syntax", languageProvider.get("command.question.reload.syntax"));
     }
 }

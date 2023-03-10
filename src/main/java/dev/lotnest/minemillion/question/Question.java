@@ -76,8 +76,16 @@ public class Question {
 
     public @NotNull Optional<String> getAnswerFromLetter(@NotNull String letter) {
         return answers.stream()
-                .filter(matchingAnswer -> ChatColor.stripColor(matchingAnswer).startsWith(letter.toLowerCase()))
+                .filter(matchingAnswer -> ChatColor.stripColor(matchingAnswer).startsWith(letter.toUpperCase()))
+                .map(matchingAnswer -> ChatColor.stripColor(matchingAnswer).substring(3))
                 .findFirst();
+    }
+
+    public @NotNull String getAnswerWithOption() {
+        return answers.stream()
+                .filter(matchingAnswer -> ChatColor.stripColor(matchingAnswer).endsWith(answer))
+                .findFirst()
+                .orElse(answer);
     }
 
     public enum Category {

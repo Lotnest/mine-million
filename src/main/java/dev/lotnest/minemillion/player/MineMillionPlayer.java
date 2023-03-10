@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -18,7 +17,7 @@ import java.util.UUID;
 @Builder
 public class MineMillionPlayer {
 
-    private final @NotNull UUID uuid;
+    private UUID uuid;
     private long firstPlayedMillis;
     private long lastPlayedMillis;
     private long gamesPlayed;

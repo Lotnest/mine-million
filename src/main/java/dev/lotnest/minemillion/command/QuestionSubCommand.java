@@ -115,6 +115,8 @@ public class QuestionSubCommand extends BaseCommand {
         questionManager.questionProvider().getQuestion().ifPresentOrElse(question -> {
             MineMillionPlayer mineMillionPlayer = playerCache.getOrCreate(player.getUniqueId()).join();
             mineMillionPlayer.setCurrentQuestion(question);
+            playerCache.update(mineMillionPlayer);
+
             player.sendMessage(ColorConstants.RED + question.getText());
             player.sendMessage(question.getAnswersArray(false));
         }, () -> player.sendMessage(ColorConstants.RED + languageProvider.get("command.question.list.noQuestionsAvailable")));

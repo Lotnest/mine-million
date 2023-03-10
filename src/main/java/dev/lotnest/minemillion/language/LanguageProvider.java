@@ -61,6 +61,6 @@ public class LanguageProvider {
         this.language = language;
         plugin.getConfigHandler().setLanguage(language);
         loadLanguageMapFromCurrentLanguageFile();
-        plugin.reloadCommandReplacements();
+        plugin.getCommandRegistry().reloadCommandReplacements();
     }
 }

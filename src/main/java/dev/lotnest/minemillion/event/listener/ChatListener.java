@@ -1,6 +1,7 @@
 package dev.lotnest.minemillion.event.listener;
 
 import dev.lotnest.minemillion.MineMillionPlugin;
+import dev.lotnest.minemillion.language.LanguageProvider;
 import dev.lotnest.minemillion.question.Question;
 import dev.lotnest.minemillion.util.ColorConstants;
 import lombok.RequiredArgsConstructor;
@@ -24,20 +25,22 @@ public class ChatListener implements Listener {
                 .ifPresent(mineMillionPlayer -> {
                     Question currentQuestion = mineMillionPlayer.getCurrentQuestion();
                     if (currentQuestion != null) {
+                        LanguageProvider languageProvider = plugin.getLanguageProvider();
+
                         event.setCancelled(true);
 
                         String playerAnswer = event.getMessage();
                         if (!playerAnswer.matches("[a-dA-D]")) {
-                            mineMillionPlayer.sendMessage(ColorConstants.RED + "Your answer must be A, B, C or D (case insensitive).");
+                            mineMillionPlayer.sendMessage(ColorConstants.RED + languageProvider.get("question.answerMustBeABCD"));
                             return;
                         }
 
                         String matchingAnswerFromLetter = currentQuestion.getAnswerFromLetter(playerAnswer).orElse(StringUtils.EMPTY);
                         if (currentQuestion.getAnswer().equalsIgnoreCase(matchingAnswerFromLetter)) {
-                            mineMillionPlayer.sendMessage(ColorConstants.GREEN + plugin.getLanguageProvider().get("question.correctAnswer") + "!");
+                            mineMillionPlayer.sendMessage(ColorConstants.GREEN + languageProvider.get("question.correctAnswer") + "!");
                         } else {
-                            mineMillionPlayer.sendMessage(ColorConstants.RED + plugin.getLanguageProvider().get("question.incorrectAnswer") + "! " +
-                                     plugin.getLanguageProvider().get("question.incorrectAnswer.correctAnswer", currentQuestion.getAnswerWithOption()));
+                            mineMillionPlayer.sendMessage(ColorConstants.RED + languageProvider.get("question.incorrectAnswer") + "! " +
+                                    plugin.getLanguageProvider().get("question.incorrectAnswer.correctAnswer", currentQuestion.getAnswerWithOption()));
                         }
 
                         mineMillionPlayer.setLastAskedQuestion(mineMillionPlayer.getCurrentQuestion());

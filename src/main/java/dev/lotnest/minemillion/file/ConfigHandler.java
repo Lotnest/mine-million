@@ -39,6 +39,11 @@ public class ConfigHandler {
         return Language.fromCode(yaml.getString("language", "en_US"));
     }
 
+    public void setLanguage(@NotNull Language language) {
+        yaml.set("language", language.getCode());
+        save();
+    }
+
     public String getMySQLHost() {
         return getString("mysql.host");
     }
@@ -53,11 +58,6 @@ public class ConfigHandler {
 
     public String getMySQLPassword() {
         return yaml.getString("mysql.password", "");
-    }
-
-    public void setLanguage(@NotNull Language language) {
-        yaml.set("language", language.getCode());
-        save();
     }
 
     @SneakyThrows

@@ -20,7 +20,7 @@ public class Mappers {
         @Override
         public <R extends Record, E> @NotNull RecordMapper<R, E> provide(@NotNull RecordType<R> recordType, @NotNull Class<? extends E> type) {
             if (type == Long.class) {
-                return result -> (E) Long.valueOf(result.get(columnName, Long.class));
+                return result -> (E) result.get(columnName, Long.class);
             }
             return result -> null;
         }

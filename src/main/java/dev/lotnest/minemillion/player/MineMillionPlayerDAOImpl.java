@@ -1,10 +1,7 @@
 package dev.lotnest.minemillion.player;
 
-import dev.lotnest.minemillion.util.LogUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 
